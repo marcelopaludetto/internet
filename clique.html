@@ -1,0 +1,773 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>O caminho de um clique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap">
+<style>
+/* Layout: título da aula → palco 16:9 (o "vídeo") → controles → lista de cenas com minutagem para a locução */
+:root{
+  --bg:#F2F6F7; --surface:#FFFFFF; --fg:#12303A; --muted:#52707A; --line:#D3E0E4; --accent:#C2412D; --chip:#E6EEF0;
+  --f-display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  /* palco: paleta fixa, é o "vídeo" */
+  --ink:#12303A; --amber:#FFC83D; --coral:#E2604A; --sea:#2E7F98; --deep:#0B2A3A; --leaf:#2FA37A;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1C22; --surface:#13272F; --fg:#E4EFF1; --muted:#93ADB5; --line:#23404A; --accent:#F28B72; --chip:#1B333C; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0C1C22; --surface:#13272F; --fg:#E4EFF1; --muted:#93ADB5; --line:#23404A; --accent:#F28B72; --chip:#1B333C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:20px}
+header{display:grid;gap:6px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0}
+
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;border-radius:14px;overflow:hidden;background:#0B2A3A;container-type:inline-size;box-shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(10,40,50,.45)}
+.stage svg{display:block;width:100%;height:100%}
+.stage:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh;background:#000}
+.chipsec{position:absolute;top:3%;left:2.5%;background:rgba(255,255,255,.88);color:#12303A;font-weight:700;font-size:clamp(10px,1.35cqw,17px);padding:.35em .8em;border-radius:99px;letter-spacing:.02em;pointer-events:none}
+.cap{position:absolute;left:50%;bottom:3.5%;transform:translateX(-50%);width:max-content;max-width:88%;background:rgba(6,22,29,.82);color:#fff;font-size:clamp(12px,2.05cqw,27px);line-height:1.35;padding:.45em .9em;border-radius:.5em;text-align:center;text-wrap:balance;pointer-events:none}
+.cap:empty{display:none}
+.bigplay{position:absolute;inset:0;margin:auto;width:clamp(64px,11cqw,120px);height:clamp(64px,11cqw,120px);border-radius:50%;border:0;background:#12303A;color:#FFC83D;cursor:pointer;display:grid;place-items:center;box-shadow:0 0 0 .5cqw rgba(255,255,255,.6)}
+.bigplay svg{width:42%;height:42%;margin-left:8%}
+.bigplay:focus-visible{outline:3px solid #FFC83D;outline-offset:4px}
+
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px}
+.btn{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:40px}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg);min-width:104px;justify-content:center}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;min-width:96px}
+.track{position:relative;flex:1 1 260px;min-width:0;display:flex;align-items:center}
+.track input{width:100%;accent-color:var(--accent);margin:0;height:28px}
+.ticks{position:absolute;inset:0;pointer-events:none}
+.ticks i{position:absolute;top:50%;width:2px;height:12px;margin-top:-6px;background:var(--muted);opacity:.45}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);cursor:pointer}
+.toggle input{accent-color:var(--accent);width:18px;height:18px}
+
+.scenes h2{font-family:var(--f-display);font-size:22px;margin:8px 0 4px}
+.scenes p.hint{margin:0 0 12px;color:var(--muted);font-size:14px}
+.sec{display:grid;gap:6px;margin-bottom:18px}
+.sec h3{margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.sc{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.sc:hover{border-color:var(--muted)}
+.sc:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sc .tc{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);grid-row:span 2;padding-top:2px}
+.sc b{font-size:15px;min-width:0}
+.sc span{font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-width:0}
+.sc[aria-current="true"]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.sc[aria-current="true"] .tc{color:var(--accent);font-weight:700}
+
+/* ---------- textos do palco ---------- */
+.h1s{font-family:var(--f-display);font-weight:800;font-size:88px;fill:#12303A;letter-spacing:-1px}
+.h2s{font-family:var(--f-display);font-weight:800;font-size:60px;fill:#12303A}
+.lbl{font-family:var(--f-body);font-weight:700;font-size:30px;fill:#12303A}
+.lbl.s{font-size:24px}
+.lbl.w{fill:#FFFFFF}
+.lbl.am{fill:#FFC83D}
+.lbl.dk{fill:#8A4F00}
+.soft{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:58px;fill:#6E98A8}
+.heavy{font-family:var(--f-display);font-weight:800;font-size:66px;fill:#12303A}
+.qm{font-family:var(--f-display);font-weight:800;font-size:190px;fill:#FFC83D;stroke:#12303A;stroke-width:6;paint-order:stroke}
+.mid{text-anchor:middle}
+.end{text-anchor:end}
+
+/* ---------- animações (controladas pelo relógio do player) ---------- */
+.a{animation-duration:.8s;animation-delay:var(--d,0s);animation-fill-mode:both;animation-timing-function:cubic-bezier(.2,.8,.2,1);transform-box:fill-box;transform-origin:center}
+.fade{animation-name:fade}
+.up{animation-name:up}
+.pop{animation-name:pop;animation-duration:.7s}
+.stamp{animation-name:stamp;animation-duration:.45s;animation-timing-function:cubic-bezier(.3,0,.3,1)}
+.draw{animation-name:draw;animation-duration:var(--len,1.6s);animation-timing-function:ease-in-out;stroke-dasharray:1 2}
+.dim{animation-name:dim}
+.out{animation-name:out;animation-duration:.6s}
+.fio{animation-name:fade,out;animation-duration:.8s,.6s;animation-delay:var(--d,0s),var(--d2,999s)}
+.drop{animation-name:drop;animation-duration:1s;animation-timing-function:linear}
+.sail{animation-name:sail;animation-duration:3s;animation-timing-function:cubic-bezier(.15,.7,.3,1)}
+.press{animation-name:press;animation-duration:.4s}
+.sweep{animation-name:sweep;animation-duration:.9s;animation-timing-function:linear;transform-origin:50% 100%}
+.float{animation:float 4s ease-in-out var(--d,0s) infinite both;transform-box:fill-box}
+.bob{animation:bob 3.2s ease-in-out var(--d,0s) infinite both;transform-box:fill-box;transform-origin:center}
+.ring{animation:ring 1.8s ease-out var(--d,0s) infinite both;transform-box:fill-box;transform-origin:center}
+.ring3{animation:ring 1.6s ease-out var(--d,0s) 3 both;transform-box:fill-box;transform-origin:center}
+.blink{animation:blink .5s steps(1) var(--d,0s) infinite both}
+.glow{animation:glow 1.4s ease-in-out var(--d,0s) infinite both;transform-box:fill-box;transform-origin:center}
+.flow{animation:flow 1.5s linear var(--d,0s) infinite both}
+.swim{animation:swim 18s linear var(--d,0s) infinite both}
+.wiggle{animation:wiggle .9s ease-in-out var(--d,0s) infinite both;transform-box:fill-box;transform-origin:center}
+
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.07)}100%{opacity:1;transform:scale(1)}}
+@keyframes stamp{0%{opacity:0;transform:scale(1.8)}100%{opacity:1;transform:scale(1)}}
+@keyframes draw{from{stroke-dashoffset:1.05}to{stroke-dashoffset:0}}
+@keyframes dim{from{opacity:1}to{opacity:.28}}
+@keyframes out{from{opacity:1}to{opacity:0}}
+@keyframes drop{0%{transform:none;animation-timing-function:cubic-bezier(.55,0,1,.45)}70%{transform:translateY(184px)}82%{transform:translateY(168px)}100%{transform:translateY(184px)}}
+@keyframes sail{from{transform:translateX(-1000px)}to{transform:none}}
+@keyframes press{0%,100%{transform:scale(1)}50%{transform:scale(.82)}}
+@keyframes sweep{from{transform:rotate(0)}to{transform:rotate(330deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(8px) rotate(1.2deg)}}
+@keyframes ring{0%{opacity:0;transform:scale(.25)}15%{opacity:.9}100%{opacity:0;transform:scale(1)}}
+@keyframes blink{0%{opacity:1}50%{opacity:.15}}
+@keyframes glow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.18)}}
+@keyframes flow{0%{opacity:0;transform:translateX(0)}6%{opacity:1}94%{opacity:1}100%{opacity:0;transform:translateX(1290px)}}
+@keyframes swim{from{transform:translateX(0)}to{transform:translateX(-2000px)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">8º ano · Aula 1 · A internet é física</div>
+    <h1>Por dentro da internet: o caminho de um clique</h1>
+    <p class="sub" id="meta">Motion narrado · Onde está a internet?</p>
+  </header>
+
+  <div class="stage" id="stage">
+<svg viewBox="0 0 1600 900" role="img" aria-label="Animação: a viagem da foto da Lia, de Fortaleza a Lisboa">
+<defs>
+  <linearGradient id="gSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3C8FA8"/><stop offset="1" stop-color="#0B2A3A"/></linearGradient>
+  <linearGradient id="gDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#145069"/><stop offset=".35" stop-color="#0B2A3A"/><stop offset="1" stop-color="#03121A"/></linearGradient>
+  <clipPath id="fiberClip"><rect x="168" y="636" width="1310" height="28"/></clipPath>
+
+  <symbol id="lia" viewBox="0 0 140 260">
+    <ellipse cx="114" cy="80" rx="15" ry="27" fill="#2B1B14"/>
+    <circle cx="70" cy="64" r="40" fill="#2B1B14"/>
+    <rect x="60" y="92" width="20" height="26" fill="#A86B4A"/>
+    <circle cx="70" cy="68" r="32" fill="#A86B4A"/>
+    <path d="M38 62 Q46 30 76 30 Q104 32 104 60 Q84 46 62 50 Q48 54 38 62Z" fill="#2B1B14"/>
+    <circle cx="59" cy="72" r="3.6" fill="#12303A"/><circle cx="81" cy="72" r="3.6" fill="#12303A"/>
+    <path d="M61 85 Q70 93 79 85" stroke="#12303A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M24 260 L30 150 Q34 114 70 112 Q106 114 110 150 L116 260Z" fill="#E2604A"/>
+  </symbol>
+  <symbol id="theo" viewBox="0 0 140 260">
+    <rect x="60" y="92" width="20" height="26" fill="#E0B08A"/>
+    <circle cx="70" cy="68" r="32" fill="#E0B08A"/>
+    <path d="M36 66 Q34 30 70 28 Q106 30 104 64 Q96 46 70 46 Q46 46 36 66Z" fill="#6B4226"/>
+    <circle cx="59" cy="72" r="3.6" fill="#12303A"/><circle cx="81" cy="72" r="3.6" fill="#12303A"/>
+    <path d="M61 85 Q70 93 79 85" stroke="#12303A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M24 260 L30 150 Q34 114 70 112 Q106 114 110 150 L116 260Z" fill="#2FA37A"/>
+  </symbol>
+  <symbol id="phone" viewBox="0 0 60 110"><rect x="2" y="2" width="56" height="106" rx="10" fill="#12303A"/><rect x="7" y="12" width="46" height="84" rx="4" fill="#BFDCE5"/></symbol>
+  <symbol id="router" viewBox="0 0 200 110">
+    <line x1="50" y1="50" x2="36" y2="6" stroke="#12303A" stroke-width="8" stroke-linecap="round"/>
+    <line x1="150" y1="50" x2="164" y2="6" stroke="#12303A" stroke-width="8" stroke-linecap="round"/>
+    <rect x="10" y="44" width="180" height="58" rx="14" fill="#12303A"/>
+    <circle cx="40" cy="73" r="6" fill="#4FD18B"/><circle cx="62" cy="73" r="6" fill="#4FD18B"/><circle cx="84" cy="73" r="6" fill="#FFC83D"/>
+  </symbol>
+  <symbol id="tower" viewBox="0 0 140 340">
+    <path d="M70 40 L30 338 M70 40 L110 338 M44 240 L96 240 M52 170 L88 170 M60 105 L80 105 M44 240 L88 170 M96 240 L52 170 M52 170 L80 105 M88 170 L60 105" stroke="#12303A" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="58" y="22" width="24" height="40" rx="4" fill="#12303A"/><circle cx="70" cy="14" r="8" fill="#E2604A"/>
+  </symbol>
+  <symbol id="cloud" viewBox="0 0 320 180">
+    <path d="M70 170 Q10 170 14 120 Q18 78 66 80 Q74 30 128 28 Q176 26 196 66 Q214 44 246 52 Q290 62 288 104 Q316 112 312 142 Q306 172 268 170Z" fill="#FFFFFF" stroke="#12303A" stroke-width="6" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="fish" viewBox="0 0 100 50"><path d="M10 25 Q40 0 72 25 Q40 50 10 25Z" fill="currentColor"/><path d="M70 25 L96 8 L90 25 L96 42Z" fill="currentColor"/><circle cx="26" cy="22" r="3.5" fill="#03121A"/></symbol>
+  <symbol id="ship" viewBox="0 0 440 220">
+    <rect x="300" y="36" width="34" height="40" fill="#12303A"/><rect x="300" y="36" width="34" height="10" fill="#E2604A"/>
+    <rect x="240" y="70" width="140" height="72" rx="6" fill="#F4F8F9" stroke="#12303A" stroke-width="5"/>
+    <rect x="258" y="88" width="24" height="20" fill="#7FC4D8"/><rect x="298" y="88" width="24" height="20" fill="#7FC4D8"/><rect x="338" y="88" width="24" height="20" fill="#7FC4D8"/>
+    <path d="M90 140 L90 46 L190 20" stroke="#12303A" stroke-width="9" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M14 140 L426 140 L384 212 L56 212Z" fill="#E2604A" stroke="#12303A" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="60" y="160" width="320" height="9" fill="#FFFFFF" opacity=".75"/>
+  </symbol>
+  <symbol id="sat" viewBox="0 0 230 120">
+    <rect x="4" y="38" width="72" height="44" fill="#5B8DEF" stroke="#12303A" stroke-width="4"/>
+    <path d="M28 38 V82 M52 38 V82 M4 60 H76" stroke="#12303A" stroke-width="2"/>
+    <rect x="154" y="38" width="72" height="44" fill="#5B8DEF" stroke="#12303A" stroke-width="4"/>
+    <path d="M178 38 V82 M202 38 V82 M154 60 H226" stroke="#12303A" stroke-width="2"/>
+    <path d="M76 60 H88 M142 60 H154" stroke="#12303A" stroke-width="5"/>
+    <rect x="88" y="28" width="54" height="64" rx="8" fill="#D9DEE2" stroke="#12303A" stroke-width="4"/>
+    <path d="M100 110 Q115 92 130 110" fill="none" stroke="#12303A" stroke-width="4"/><path d="M115 92 V100" stroke="#12303A" stroke-width="4"/>
+  </symbol>
+  <symbol id="house" viewBox="0 0 120 120">
+    <path d="M6 56 L60 10 L114 56Z" fill="currentColor" stroke="#12303A" stroke-width="4" stroke-linejoin="round"/>
+    <rect x="18" y="56" width="84" height="62" fill="#F4F8F9" stroke="#12303A" stroke-width="4"/>
+    <rect x="50" y="80" width="22" height="38" fill="#12303A"/><rect x="28" y="68" width="16" height="16" fill="#7FC4D8"/><rect x="78" y="68" width="16" height="16" fill="#7FC4D8"/>
+  </symbol>
+  <symbol id="photo" viewBox="0 0 80 64">
+    <rect x="2" y="2" width="76" height="60" rx="8" fill="#FFFFFF" stroke="#12303A" stroke-width="4"/>
+    <rect x="9" y="9" width="62" height="40" rx="3" fill="#7FC4D8"/><circle cx="56" cy="20" r="6" fill="#FFC83D"/>
+    <path d="M9 49 L9 40 Q30 34 71 42 L71 49Z" fill="#E7D6AE"/><path d="M20 40 L20 22 M20 22 Q12 22 10 28 M20 22 Q28 20 31 27" stroke="#2FA37A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="dot" viewBox="-20 -20 40 40"><circle r="18" fill="#FFC83D" opacity=".35"/><circle r="9" fill="#FFF3C4"/></symbol>
+  <symbol id="anchor" viewBox="0 0 80 100"><g fill="none" stroke="#12303A" stroke-width="7" stroke-linecap="round"><circle cx="40" cy="14" r="9"/><path d="M40 23 V90 M22 40 H58 M10 62 Q14 90 40 90 Q66 90 70 62"/></g></symbol>
+  <symbol id="net" viewBox="0 0 100 80"><path d="M6 10 Q50 0 94 10 L84 70 Q50 80 16 70Z M6 10 L84 70 M94 10 L16 70 M28 7 L22 74 M50 4 L50 78 M72 7 L78 74 M10 30 Q50 22 90 30 M13 50 Q50 46 87 50" fill="none" stroke="#12303A" stroke-width="3.5" stroke-linejoin="round"/></symbol>
+  <symbol id="rocks" viewBox="0 0 110 70"><path d="M4 66 Q2 36 26 30 Q44 10 62 28 Q70 22 80 30 Q106 34 106 66Z" fill="#8E9AA0" stroke="#12303A" stroke-width="4" stroke-linejoin="round"/><path d="M50 66 Q48 46 64 44 Q80 44 80 66" fill="#A9B4B9" stroke="#12303A" stroke-width="4"/></symbol>
+
+  <symbol id="map" viewBox="0 0 1600 900">
+    <rect width="1600" height="900" fill="#BFDCE5"/>
+    <g stroke="#A2CAD7" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M560 360 q20 -12 40 0 t40 0"/><path d="M900 300 q20 -12 40 0 t40 0"/><path d="M700 640 q20 -12 40 0 t40 0"/><path d="M1080 470 q20 -12 40 0 t40 0"/><path d="M1180 720 q20 -12 40 0 t40 0"/><path d="M640 160 q20 -12 40 0 t40 0"/>
+    </g>
+    <path d="M0 380 L120 400 L260 430 L360 470 L430 520 L470 580 L455 650 L420 720 L380 800 L350 900 L0 900Z" fill="#E7D6AE" stroke="#12303A" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M1360 0 L1320 40 L1290 90 L1310 140 L1300 200 L1330 260 L1390 300 L1450 330 L1600 330 L1600 0Z" fill="#E7D6AE" stroke="#12303A" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M1600 390 L1480 400 L1410 450 L1370 520 L1385 600 L1450 690 L1530 760 L1600 790Z" fill="#E7D6AE" stroke="#12303A" stroke-width="4" stroke-linejoin="round"/>
+    <text x="150" y="560" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="26" letter-spacing="5" fill="#8C7A55">BRASIL</text>
+    <text x="1470" y="110" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="24" letter-spacing="4" fill="#8C7A55">PORTUGAL</text>
+    <text x="1510" y="590" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="24" letter-spacing="4" fill="#8C7A55">ÁFRICA</text>
+    <text x="880" y="560" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-style="italic" font-size="40" fill="#5E95A8">Oceano Atlântico</text>
+  </symbol>
+</defs>
+
+<!-- 0 · Onde está a internet? -->
+<g class="scene" id="sc0">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <text x="800" y="220" class="h1s mid a up" data-s="1">Onde está a internet?</text>
+  <g transform="translate(1330,190)"><g class="a pop" data-s="2"><g class="float"><text class="qm mid" y="60">?</text></g></g></g>
+  <g transform="translate(400,480)"><g class="a pop" data-s="3"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#cloud" x="-100" y="-58" width="200" height="112"/><text y="200" class="lbl mid">Para o céu?</text></g></g>
+  <g transform="translate(800,480)"><g class="a pop" data-s="4"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#router" x="-95" y="-58" width="190" height="105"/><text y="200" class="lbl mid">Para o roteador?</text></g></g>
+  <g transform="translate(1200,480)"><g class="a pop" data-s="5"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#phone" x="-35" y="-64" width="70" height="128"/><text y="200" class="lbl mid">Para o celular?</text></g></g>
+</g>
+
+<!-- 1 · A ideia de nuvem -->
+<g class="scene" id="sc1">
+  <rect width="1600" height="900" fill="#DCEBF2"/>
+  <g class="a up" data-s="2" data-o=".6"><rect y="760" width="1600" height="140" fill="#9C8A6E"/><path d="M0 800 H1600 M0 830 H1600" stroke="#7B6A50" stroke-width="5" stroke-dasharray="40 18"/></g>
+  <g class="a up" data-s="0"><rect x="110" y="80" width="640" height="130" rx="65" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><text x="430" y="166" class="h2s mid" style="font-size:56px">“está na nuvem”</text></g>
+  <text x="380" y="360" class="soft mid a fio" data-s="1" data-s2="2">leve</text>
+  <text x="1230" y="320" class="soft mid a fio" data-s="1" data-f=".35" data-s2="2">flutuando</text>
+  <text x="1180" y="660" class="soft mid a fio" data-s="1" data-f=".7" data-s2="2">invisível</text>
+  <g transform="translate(800,430)"><g class="a drop" data-s="2" data-f=".05"><g class="a fade" data-s="0" data-o=".5"><use href="#cloud" x="-260" y="-146" width="520" height="292"/></g></g></g>
+  <g transform="translate(560,760)"><g class="a pop" data-s="2" data-f=".05" data-o=".75"><ellipse rx="70" ry="16" fill="#FFFFFF" opacity=".75"/></g></g>
+  <g transform="translate(1040,760)"><g class="a pop" data-s="2" data-f=".05" data-o=".8"><ellipse rx="70" ry="16" fill="#FFFFFF" opacity=".75"/></g></g>
+  <text x="330" y="380" class="heavy mid a stamp" data-s="2" data-f=".35">pesada</text>
+  <text x="800" y="300" class="heavy mid a stamp" data-s="2" data-f=".5">concreta</text>
+  <text x="1250" y="380" class="heavy mid a stamp" data-s="2" data-f=".72">surpreendente</text>
+</g>
+
+<!-- 2 · Lia e Theo -->
+<g class="scene" id="sc2">
+  <use href="#map" width="1600" height="900"/>
+  <path d="M330 462 Q 780 60 1305 215" pathLength="1" class="a draw" data-s="3" style="--len:3s" fill="none" stroke="#E2604A" stroke-width="6" stroke-linecap="round"/>
+  <path id="p2" d="M330 462 Q 780 60 1305 215" fill="none"/>
+  <g transform="translate(330,462)"><g class="a pop" data-s="2"><circle r="44" fill="none" stroke="#E2604A" stroke-width="4" class="ring"/><circle r="13" fill="#E2604A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="-24" class="lbl end">Fortaleza</text></g></g>
+  <g transform="translate(1305,215)"><g class="a pop" data-s="2" data-f=".55"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="4" class="ring"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="46" class="lbl end">Lisboa</text></g></g>
+  <g class="a up" data-s="1"><use href="#lia" x="60" y="520" width="170" height="316"/></g>
+  <g class="a pop" data-s="1" data-o=".4"><rect x="226" y="600" width="88" height="48" rx="24" fill="#E2604A"/><text x="270" y="634" class="lbl w mid">Lia</text></g>
+  <g class="a up" data-s="2" data-f=".6"><use href="#theo" x="1420" y="40" width="150" height="278"/></g>
+  <g class="a pop" data-s="2" data-f=".7"><rect x="1430" y="340" width="110" height="48" rx="24" fill="#2FA37A"/><text x="1485" y="374" class="lbl w mid">Theo</text></g>
+  <g class="trav" data-path="p2" data-s="3" data-o=".3" data-dur="3.4"><use href="#photo" x="-36" y="-29" width="72" height="58"/></g>
+</g>
+
+<!-- 3 · Do celular ao roteador -->
+<g class="scene" id="sc3">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <g transform="translate(470,330)"><circle r="230" fill="none" stroke="#FFC83D" stroke-width="7" class="ring" data-s="1"/><circle r="230" fill="none" stroke="#FFC83D" stroke-width="7" class="ring" data-s="1" data-o=".6"/><circle r="230" fill="none" stroke="#FFC83D" stroke-width="7" class="ring" data-s="1" data-o="1.2"/></g>
+  <g class="a up" data-s="0">
+    <rect x="170" y="80" width="300" height="640" rx="42" fill="#12303A"/>
+    <rect x="186" y="110" width="268" height="590" rx="26" fill="#F7FAFB"/>
+    <rect x="198" y="122" width="244" height="78" rx="18" fill="#DDEFF3"/>
+    <circle cx="238" cy="161" r="22" fill="#2FA37A"/><text x="272" y="171" class="lbl">Theo</text>
+    <rect x="200" y="620" width="240" height="62" rx="31" fill="#FFFFFF" stroke="#C9D7DC" stroke-width="3"/>
+    <text x="226" y="660" class="lbl s" style="fill:#7D959D">mensagem</text>
+  </g>
+  <g class="a pop" data-s="0" data-f=".35"><use href="#photo" x="232" y="300" width="200" height="160"/></g>
+  <g transform="translate(408,651)"><g class="a press" data-s="0" data-f=".85"><circle r="27" fill="#FFC83D" stroke="#12303A" stroke-width="3"/><path d="M-8 -11 L12 0 L-8 11Z" fill="#12303A"/></g></g>
+  <g transform="translate(500,662)"><g class="a pop" data-s="0" data-f=".85"><text class="lbl dk">enviar!</text></g></g>
+  <g class="a fade" data-s="1">
+    <path d="M480 330 Q 760 200 1090 520" fill="none" stroke="#12303A" stroke-width="4" stroke-dasharray="6 16" stroke-linecap="round" opacity=".45"/>
+    <line x1="960" y1="620" x2="1290" y2="620" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+    <use href="#router" x="980" y="498" width="220" height="121"/>
+    <text x="1090" y="682" class="lbl mid">roteador Wi-Fi</text>
+  </g>
+  <text x="790" y="200" class="lbl mid a fade" data-s="1" data-f=".3" style="font-style:italic">uma onda invisível, como as do rádio</text>
+  <path id="p3a" d="M480 330 Q 760 200 1090 520" fill="none"/>
+  <g class="trav" data-path="p3a" data-s="1" data-o=".6" data-dur="2.6"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+  <g class="a up" data-s="2">
+    <path d="M1250 900 Q1420 560 1600 610 L1600 900Z" fill="#9DBF8E" stroke="#12303A" stroke-width="4"/>
+    <use href="#tower" x="1390" y="300" width="130" height="316"/>
+    <text x="1370" y="360" class="lbl end">antena</text>
+    <text x="1370" y="396" class="lbl s end" style="fill:#52707A">dados móveis</text>
+  </g>
+  <g transform="translate(1455,313)"><circle r="150" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="2" data-o="1"/><circle r="150" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="2" data-o="1.6"/></g>
+  <path id="p3b" d="M480 360 Q 980 120 1455 313" fill="none"/>
+  <g class="trav" data-path="p3b" data-s="2" data-o="1" data-dur="2.8"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+</g>
+
+<!-- 4 · Do ar para o fio -->
+<g class="scene" id="sc4">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <line x1="160" y1="200" x2="1440" y2="200" stroke="#C6D6DB" stroke-width="20" stroke-linecap="round"/>
+  <path d="M160 200 H250" pathLength="1" class="a draw" data-s="0" style="--len:.8s" stroke="#FFC83D" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <path d="M250 200 H1440" pathLength="1" class="a draw" data-s="3" style="--len:3s" stroke="#2E7F98" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <circle cx="160" cy="200" r="20" fill="#E2604A" stroke="#FFFFFF" stroke-width="5"/><text x="160" y="265" class="lbl s mid">Fortaleza</text>
+  <circle cx="1440" cy="200" r="20" fill="#2FA37A" stroke="#FFFFFF" stroke-width="5"/><text x="1440" y="265" class="lbl s mid">Lisboa</text>
+  <text x="205" y="150" class="lbl mid dk a fade" data-s="0">pelo ar</text>
+  <g class="a pop" data-s="1"><path d="M250 240 L300 300" stroke="#12303A" stroke-width="4"/><text x="310" y="330" class="lbl" style="font-style:italic">é só o comecinho!</text></g>
+  <text x="845" y="150" class="lbl mid a fade" data-s="3" data-o=".6">quase toda a viagem: dentro de cabos</text>
+  <g transform="translate(360,450)"><circle r="120" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0"/><circle r="120" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0" data-o=".7"/></g>
+  <use href="#router" x="220" y="430" width="280" height="154"/>
+  <path d="M480 545 Q 560 620 680 620 L1600 620" pathLength="1" class="a draw" data-s="2" style="--len:1.8s" fill="none" stroke="#12303A" stroke-width="20" stroke-linecap="round"/>
+  <path d="M480 545 Q 560 620 680 620 L1600 620" pathLength="1" class="a draw" data-s="2" style="--len:1.8s" fill="none" stroke="#2E7F98" stroke-width="6" stroke-linecap="round"/>
+  <path id="p4" d="M480 545 Q 560 620 680 620 L1600 620" fill="none"/>
+  <g class="trav" data-path="p4" data-s="2" data-o="1" data-dur="2.6" data-loop="1" data-gap=".5"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <text x="1040" y="560" class="lbl mid a up" data-s="2" data-o=".4">a foto entra em um fio</text>
+</g>
+
+<!-- 5 · Riachos que viram rio -->
+<g class="scene" id="sc5">
+  <rect width="1600" height="900" fill="#DCEBF2"/>
+  <rect y="620" width="1600" height="60" fill="#8E9AA0"/><path d="M0 650 H1600" stroke="#E3EEF1" stroke-width="4" stroke-dasharray="40 30"/>
+  <rect y="680" width="1600" height="220" fill="#9C8A6E"/>
+  <g stroke="#12303A" stroke-width="12"><line x1="900" y1="316" x2="900" y2="620"/><line x1="1070" y1="316" x2="1070" y2="620"/><line x1="1240" y1="316" x2="1240" y2="620"/></g>
+  <g stroke="#12303A" stroke-width="8" stroke-linecap="round"><line x1="874" y1="330" x2="926" y2="330"/><line x1="1044" y1="330" x2="1096" y2="330"/><line x1="1214" y1="330" x2="1266" y2="330"/></g>
+  <use href="#house" x="60" y="490" width="130" height="130" style="color:#E2604A"/>
+  <use href="#house" x="210" y="490" width="130" height="130" style="color:#FFC83D"/>
+  <use href="#house" x="360" y="490" width="130" height="130" style="color:#2FA37A"/>
+  <use href="#house" x="510" y="490" width="130" height="130" style="color:#5B8DEF"/>
+  <use href="#house" x="660" y="490" width="130" height="130" style="color:#E2604A"/>
+  <text x="125" y="474" class="lbl s mid">casa da Lia</text>
+  <g fill="none" stroke="#12303A" stroke-width="4" stroke-linecap="round">
+    <path d="M155 530 C155 420 700 350 900 330" pathLength="1" class="a draw" data-s="0" data-f=".02"/>
+    <path d="M305 530 C305 430 700 360 900 330" pathLength="1" class="a draw" data-s="0" data-f=".12"/>
+    <path d="M455 530 C455 440 720 370 900 330" pathLength="1" class="a draw" data-s="0" data-f=".22"/>
+    <path d="M605 530 C605 450 760 380 900 330" pathLength="1" class="a draw" data-s="0" data-f=".32"/>
+    <path d="M755 530 C755 470 820 400 900 330" pathLength="1" class="a draw" data-s="0" data-f=".42"/>
+  </g>
+  <path d="M900 330 L1240 330 L1240 712 L1420 712 L1420 620" pathLength="1" class="a draw" data-s="0" data-f=".6" style="--len:3.4s" fill="none" stroke="#12303A" stroke-width="14" stroke-linejoin="round"/>
+  <path d="M900 330 L1240 330 L1240 712 L1420 712 L1420 620" pathLength="1" class="a draw" data-s="0" data-f=".6" style="--len:3.4s" fill="none" stroke="#2E7F98" stroke-width="5" stroke-linejoin="round"/>
+  <text x="560" y="300" class="lbl mid a fade" data-s="0" data-f=".5" style="font-style:italic">riachos que se juntam num rio</text>
+  <g class="a up" data-s="1" data-f=".3">
+    <rect x="1300" y="250" width="260" height="370" rx="8" fill="#F4F8F9" stroke="#12303A" stroke-width="5"/>
+    <rect x="1320" y="270" width="220" height="86" rx="8" fill="#12303A"/>
+    <text x="1430" y="306" class="lbl s w mid">provedor de</text><text x="1430" y="338" class="lbl s w mid">internet</text>
+    <g fill="#4FD18B"><circle cx="1340" cy="400" r="7"/><circle cx="1340" cy="440" r="7"/><circle cx="1340" cy="480" r="7"/><circle cx="1340" cy="520" r="7"/></g>
+    <g fill="#C9D7DC"><rect x="1360" y="392" width="170" height="16" rx="4"/><rect x="1360" y="432" width="170" height="16" rx="4"/><rect x="1360" y="472" width="170" height="16" rx="4"/><rect x="1360" y="512" width="170" height="16" rx="4"/></g>
+    <g fill="#FFC83D" class="blink"><circle cx="1340" cy="420" r="5"/><circle cx="1340" cy="500" r="5"/></g>
+  </g>
+  <text x="1090" y="722" class="lbl s mid w a fade" data-s="1" data-f=".1">por baixo das ruas</text>
+  <text x="1070" y="290" class="lbl s mid a fade" data-s="1">pelos postes</text>
+  <path id="p5" d="M155 530 C155 420 700 350 900 330 L1240 330 L1240 712 L1420 712 L1420 620" fill="none"/>
+  <g class="trav" data-path="p5" data-s="1" data-o=".4" data-dur="5"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+</g>
+
+<!-- 6 · Fibra óptica -->
+<g class="scene" id="sc6">
+  <rect width="1600" height="900" fill="#0B2A3A"/>
+  <g transform="translate(300,230)"><g class="a pop" data-s="0">
+    <circle r="150" fill="#1B3B4A" stroke="#6E8A96" stroke-width="10"/><circle r="108" fill="#0E2633"/>
+    <g class="glow"><circle r="18" fill="#CFEFFF"/><circle cx="44" r="18" fill="#CFEFFF"/><circle cx="-44" r="18" fill="#CFEFFF"/><circle cx="22" cy="38" r="18" fill="#CFEFFF"/><circle cx="-22" cy="38" r="18" fill="#CFEFFF"/><circle cx="22" cy="-38" r="18" fill="#CFEFFF"/><circle cx="-22" cy="-38" r="18" fill="#CFEFFF"/></g>
+    <text y="205" class="lbl w mid">cabo de fibra óptica</text>
+  </g></g>
+  <g class="a fade" data-s="1">
+    <path d="M120 480 C 400 440, 700 520, 1000 470 S 1400 480 1480 460" fill="none" stroke="#8B5A2B" stroke-width="22" stroke-linecap="round"/>
+    <text x="1000" y="535" class="lbl w mid">fio de cabelo</text>
+  </g>
+  <g class="a fade" data-s="1" data-f=".45">
+    <rect x="170" y="644" width="1310" height="12" rx="6" fill="#9FD8EA" opacity=".35"/>
+    <line x1="170" y1="650" x2="1480" y2="650" stroke="#CFEFFF" stroke-width="3"/>
+    <text x="1480" y="712" class="lbl w end">fio de vidro: ainda mais fino</text>
+  </g>
+  <g class="a up" data-s="2">
+    <rect x="28" y="628" width="104" height="44" rx="10" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/>
+    <path d="M132 620 L166 608 L166 692 L132 680Z" fill="#B9C3C7" stroke="#12303A" stroke-width="3"/>
+    <circle cx="170" cy="650" r="34" fill="#FFC83D" class="blink" style="animation-duration:.22s" opacity=".85"/>
+  </g>
+  <g clip-path="url(#fiberClip)">
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o=".5"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#7FC4D8" class="flow" data-s="2" data-o=".75"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o="1"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#2FA37A" class="flow" data-s="2" data-o="1.25"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o="1.5"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#E7D6AE" class="flow" data-s="2" data-o="1.75"/>
+  </g>
+  <text x="820" y="600" class="lbl am mid a fade" data-s="3">cada piscada leva um pedacinho da foto</text>
+  <g class="a pop" data-s="3" data-f=".5"><use href="#photo" x="1490" y="612" width="96" height="77"/></g>
+  <g transform="translate(1150,40)"><g class="a fade" data-s="4">
+    <path id="p6" d="M60 40 L140 20 L200 50 L260 80 L290 120 L270 170 L240 230 L190 280 L150 300 L120 270 L130 220 L90 200 L50 160 L20 110 L30 60Z" fill="#1B3B4A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+    <text x="150" y="170" class="lbl s w mid">Brasil</text>
+    <g class="trav" data-path="p6" data-s="4" data-o=".3" data-dur=".9" data-loop="1"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  </g></g>
+  <text x="1300" y="380" class="lbl am mid a fade" data-s="4" data-f=".4">várias voltas num piscar de olhos</text>
+</g>
+
+<!-- 7 · Um oceano no caminho -->
+<g class="scene" id="sc7">
+  <use href="#map" width="1600" height="900"/>
+  <g transform="translate(330,462)"><circle r="13" fill="#E2604A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="-24" class="lbl end">Fortaleza</text></g>
+  <g transform="translate(1305,215)"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="5" class="ring" data-s="0"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="46" class="lbl end">Lisboa</text></g>
+  <g class="a pop" data-s="0" data-f=".5"><rect x="1240" y="250" width="200" height="48" rx="24" fill="#2FA37A"/><text x="1340" y="284" class="lbl w mid">Theo está aqui</text></g>
+  <g transform="translate(400,410)"><g class="wiggle"><use href="#photo" x="-36" y="-29" width="72" height="58"/></g></g>
+  <path d="M470 470 L1290 250" pathLength="1" class="a draw" data-s="1" style="--len:1.6s" stroke="#12303A" stroke-width="4" stroke-dasharray="1 2" fill="none"/>
+  <g class="a fade" data-s="1" data-f=".5"><rect x="660" y="390" width="300" height="52" rx="26" fill="#FFFFFF" stroke="#12303A" stroke-width="3"/><text x="810" y="426" class="lbl mid">um oceano inteiro</text></g>
+  <g transform="translate(860,320)"><g class="a pop" data-s="2"><text class="qm mid" y="60" style="font-size:240px">?</text></g></g>
+</g>
+
+<!-- 8 · Satélite ou cabo? -->
+<g class="scene" id="sc8">
+  <rect width="1600" height="900" fill="#DCEBF2"/>
+  <rect y="380" width="1600" height="520" fill="url(#gSea)"/>
+  <path d="M0 380 q40 -14 80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".7"/>
+  <path d="M160 820 Q 500 780 800 830 T 1440 810 L1440 900 L160 900Z" fill="#062130"/>
+  <path d="M0 300 L110 300 Q150 300 160 380 L180 900 L0 900Z" fill="#E7D6AE" stroke="#12303A" stroke-width="4"/>
+  <path d="M1600 300 L1490 300 Q1450 300 1440 380 L1420 900 L1600 900Z" fill="#E7D6AE" stroke="#12303A" stroke-width="4"/>
+  <text x="70" y="280" class="lbl s mid">Brasil</text><text x="1530" y="280" class="lbl s mid">Europa</text>
+  <g transform="translate(800,150)"><g class="a dim" data-s="1" data-f=".1"><g class="a pop" data-s="0">
+    <g class="float"><use href="#sat" x="-115" y="-60" width="230" height="120"/></g>
+    <path d="M-40 70 L-560 160 M40 70 L620 160" stroke="#12303A" stroke-width="3" stroke-dasharray="8 12" fill="none"/>
+    <text y="110" class="lbl mid">satélite?</text>
+  </g></g></g>
+  <text x="1150" y="90" class="lbl s mid a fade" data-s="1" data-f=".1" style="fill:#52707A">ajuda em lugares muito isolados</text>
+  <path d="M140 380 L170 800 Q 500 770 800 815 T 1430 795 L1460 380" pathLength="1" class="a draw" data-s="1" data-f=".45" style="--len:2.6s" fill="none" stroke="#FFC83D" stroke-width="8" stroke-linejoin="round"/>
+  <path id="p8" d="M140 380 L170 800 Q 500 770 800 815 T 1430 795 L1460 380" fill="none"/>
+  <g class="trav" data-path="p8" data-s="1" data-f=".7" data-dur="3" data-loop="1"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <g class="trav" data-path="p8" data-s="1" data-f=".7" data-o="1.5" data-dur="3" data-loop="1"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <text x="800" y="720" class="lbl w mid a fade" data-s="1" data-f=".6">quase toda a informação entre continentes</text>
+  <text x="800" y="560" class="h2s mid a stamp" data-s="2" style="fill:#FFFFFF;font-size:80px">cabos submarinos</text>
+</g>
+
+<!-- 9 · Fortaleza -->
+<g class="scene" id="sc9">
+  <rect width="1600" height="900" fill="url(#gSea)"/>
+  <path d="M0 560 Q 300 520 600 545 Q 800 560 1000 540 Q 1300 510 1600 550 L1600 900 L0 900Z" fill="#F2E3BF"/>
+  <path d="M0 590 Q 300 555 600 580 Q 800 595 1000 575 Q 1300 545 1600 585 L1600 900 L0 900Z" fill="#E7D6AE" stroke="#12303A" stroke-width="4"/>
+  <g fill="#B9C9CF" stroke="#12303A" stroke-width="3"><rect x="200" y="640" width="60" height="140"/><rect x="270" y="610" width="50" height="170"/><rect x="1150" y="630" width="70" height="150"/><rect x="1230" y="600" width="50" height="180"/><rect x="1290" y="650" width="60" height="130"/><rect x="330" y="660" width="70" height="120"/></g>
+  <text x="800" y="700" class="h2s mid">Fortaleza</text>
+  <g transform="translate(1540,260)"><path d="M0 30 L0 -20 M-12 -6 L0 -22 L12 -6" stroke="#FFFFFF" stroke-width="5" fill="none" stroke-linecap="round"/><text x="22" y="10" class="lbl s w">N</text></g>
+  <g fill="none" stroke="#0A1E28" stroke-width="7" stroke-linecap="round">
+    <path d="M800 550 Q 400 470 -60 300" pathLength="1" class="a draw" data-s="0" data-f="0"/>
+    <path d="M800 550 Q 300 300 100 0" pathLength="1" class="a draw" data-s="0" data-f=".1"/>
+    <path d="M800 550 Q 500 250 400 0" pathLength="1" class="a draw" data-s="0" data-f=".2"/>
+    <path d="M800 550 Q 700 250 650 0" pathLength="1" class="a draw" data-s="0" data-f=".3"/>
+    <path d="M800 550 Q 900 250 950 0" pathLength="1" class="a draw" data-s="0" data-f=".4"/>
+    <path d="M800 550 Q 1300 450 1660 320" pathLength="1" class="a draw" data-s="0" data-f=".55"/>
+  </g>
+  <path id="p9a" d="M800 550 Q 300 300 100 0" fill="none"/><path id="p9b" d="M100 0 Q 300 300 800 550" fill="none"/>
+  <path id="p9c" d="M800 550 Q 900 250 950 0" fill="none"/><path id="p9d" d="M-60 300 Q 400 470 800 550" fill="none"/>
+  <g class="trav" data-path="p9a" data-s="1" data-dur="2.2" data-loop="1" data-gap=".4"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <g class="trav" data-path="p9b" data-s="1" data-o=".8" data-dur="2.2" data-loop="1" data-gap=".4"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <g class="trav" data-path="p9c" data-s="1" data-o=".4" data-dur="2" data-loop="1" data-gap=".5"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <g class="trav" data-path="p9d" data-s="1" data-o="1.1" data-dur="2.4" data-loop="1" data-gap=".3"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <text x="380" y="520" class="lbl w mid a fade" data-s="1" data-f=".2">informação entrando e saindo do país</text>
+  <path d="M800 550 Q 1050 280 1250 0" pathLength="1" class="a draw" data-s="0" data-f=".7" fill="none" stroke="#0A1E28" stroke-width="7" stroke-linecap="round"/>
+  <path d="M800 550 Q 1050 280 1250 0" pathLength="1" class="a draw" data-s="2" style="--len:2s" fill="none" stroke="#FFC83D" stroke-width="10" stroke-linecap="round"/>
+  <path id="p9e" d="M800 550 Q 1050 280 1250 0" fill="none"/>
+  <g class="a pop" data-s="2" data-f=".3"><rect x="1250" y="110" width="240" height="56" rx="28" fill="#FFC83D" stroke="#12303A" stroke-width="3"/><text x="1370" y="148" class="lbl mid">rumo a Portugal</text></g>
+  <g class="trav" data-path="p9e" data-s="2" data-f=".55" data-dur="2.4"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+  <g transform="translate(800,550)"><circle r="40" fill="none" stroke="#FFFFFF" stroke-width="4" class="ring"/><rect x="-34" y="-22" width="68" height="44" rx="6" fill="#F4F8F9" stroke="#12303A" stroke-width="4"/></g>
+  <text x="800" y="625" class="lbl s mid">estação de cabos</text>
+</g>
+
+<!-- 10 · Por dentro do cabo -->
+<g class="scene" id="sc10">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <text x="800" y="120" class="h2s mid a up" data-s="0">Como é um cabo desses?</text>
+  <g transform="translate(470,440)"><g class="a pop" data-s="1">
+    <circle r="190" fill="#1D2B33"/><circle r="174" fill="#6F7C82"/>
+    <g data-ring="26,157,14,#C3CCD0"></g>
+    <circle r="138" fill="#2B3A42"/><circle r="100" fill="#C98A4B"/><circle r="72" fill="#E8EEF0"/><circle r="44" fill="#12303A"/>
+    <g class="glow" data-s="3"><circle r="9" fill="#FFC83D"/><circle cx="20" r="9" fill="#FFC83D"/><circle cx="-20" r="9" fill="#FFC83D"/><circle cx="10" cy="18" r="9" fill="#FFC83D"/><circle cx="-10" cy="18" r="9" fill="#FFC83D"/><circle cx="10" cy="-18" r="9" fill="#FFC83D"/><circle cx="-10" cy="-18" r="9" fill="#FFC83D"/></g>
+    <text y="250" class="lbl mid">perto da praia: grosso, com camadas de metal</text>
+  </g></g>
+  <g class="a pop" data-s="1" data-f=".55"><use href="#anchor" x="96" y="180" width="70" height="88"/><text x="131" y="300" class="lbl s mid">âncoras</text></g>
+  <g class="a pop" data-s="1" data-f=".7"><use href="#net" x="760" y="200" width="100" height="80"/><text x="810" y="310" class="lbl s mid">redes de pesca</text></g>
+  <g class="a pop" data-s="1" data-f=".85"><use href="#rocks" x="756" y="500" width="110" height="70"/><text x="811" y="600" class="lbl s mid">pedras</text></g>
+  <g transform="translate(1180,440)"><g class="a pop" data-s="2">
+    <circle r="48" fill="#1D2B33"/><circle r="36" fill="#E8EEF0"/><circle r="22" fill="#12303A"/>
+    <g class="glow" data-s="3"><circle r="5" fill="#FFC83D"/><circle cx="10" r="5" fill="#FFC83D"/><circle cx="-10" r="5" fill="#FFC83D"/><circle cy="10" r="5" fill="#FFC83D"/><circle cy="-10" r="5" fill="#FFC83D"/></g>
+  </g></g>
+  <g class="a pop" data-s="2" data-f=".5"><circle cx="1390" cy="440" r="42" fill="none" stroke="#2FA37A" stroke-width="16"/><text x="1390" y="530" class="lbl s mid">mangueira</text></g>
+  <text x="1285" y="580" class="lbl mid a fade" data-s="2" data-f=".2">no fundo do mar: fino</text>
+  <text x="1285" y="330" class="lbl mid dk a fade" data-s="3">no centro, os fios de vidro</text>
+</g>
+
+<!-- 11 · No fundo do mar -->
+<g class="scene" id="sc11">
+  <rect width="1600" height="900" fill="url(#gDeep)"/>
+  <text x="800" y="70" class="lbl s mid a fade" data-s="0" data-f=".75" style="fill:#7FB7C9">a luz do sol não chega aqui</text>
+  <g transform="translate(1750,240)"><g class="swim" data-s="0" data-o="-4"><use href="#fish" x="-50" y="-25" width="100" height="50" style="color:#5FA9BF"/></g></g>
+  <g transform="translate(1750,360)"><g class="swim" data-s="0" data-o="-11" style="animation-duration:22s"><use href="#fish" x="-35" y="-17" width="70" height="35" style="color:#4C8FA3"/></g></g>
+  <g transform="translate(1750,180)"><g class="swim" data-s="0" data-o="-15" style="animation-duration:26s"><use href="#fish" x="-30" y="-15" width="60" height="30" style="color:#3F7C8F"/></g></g>
+  <g transform="translate(1750,450)"><g class="swim" data-s="0" data-o="-7" style="animation-duration:20s"><use href="#fish" x="-45" y="-22" width="90" height="45" style="color:#6CB4C7"/></g></g>
+  <path d="M0 760 L200 760 Q350 760 420 640 Q480 540 560 650 Q620 740 760 760 L1000 760 Q1100 700 1180 600 Q1240 540 1300 660 Q1360 760 1600 760 L1600 900 L0 900Z" fill="#0A2833" stroke="#2C5566" stroke-width="4"/>
+  <path d="M0 752 L200 752 Q350 752 420 632 Q480 532 560 642 Q620 732 760 752 L1000 752 Q1100 692 1180 592 Q1240 532 1300 652 Q1360 752 1600 752" fill="none" stroke="#3A5A68" stroke-width="9"/>
+  <path id="p11" d="M0 752 L200 752 Q350 752 420 632 Q480 532 560 642 Q620 732 760 752 L1000 752 Q1100 692 1180 592 Q1240 532 1300 652 Q1360 752 1600 752" fill="none"/>
+  <g class="trav" data-path="p11" data-s="0" data-dur="6" data-loop="1" data-rep="150,880,1520"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <g class="trav" data-path="p11" data-s="0" data-o="2" data-dur="6" data-loop="1" data-rep="150,880,1520"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <g class="trav" data-path="p11" data-s="0" data-o="4" data-dur="6" data-loop="1" data-rep="150,880,1520"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <text x="480" y="500" class="lbl w mid a fade" data-s="0" data-f=".35">montanhas submarinas</text>
+  <text x="880" y="712" class="lbl s w mid a fio" data-s="0" data-f=".25" data-s2="1">planícies escuras</text>
+  <text x="1250" y="260" class="lbl s w mid a fade" data-s="0" data-f=".65" style="fill:#9ED2E2">peixes que nunca viram o sol</text>
+  <g class="a pop" data-s="1" data-f=".1">
+    <g transform="translate(150,752)"><circle r="56" fill="none" stroke="#FFC83D" stroke-width="4" class="ring"/><rect x="-28" y="-14" width="56" height="28" rx="14" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
+    <g transform="translate(880,752)"><circle r="56" fill="none" stroke="#FFC83D" stroke-width="4" class="ring" data-o=".5"/><rect x="-28" y="-14" width="56" height="28" rx="14" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
+    <g transform="translate(1520,750)"><circle r="56" fill="none" stroke="#FFC83D" stroke-width="4" class="ring" data-o="1"/><rect x="-28" y="-14" width="56" height="28" rx="14" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
+  </g>
+  <g class="a up" data-s="1" data-f=".3"><text x="880" y="680" class="lbl am mid">repetidor</text><text x="880" y="712" class="lbl s w mid">um “empurrãozinho” na luz</text></g>
+</g>
+
+<!-- 12 · O navio de reparo -->
+<g class="scene" id="sc12">
+  <rect width="1600" height="900" fill="#DCEBF2"/>
+  <rect y="330" width="1600" height="570" fill="url(#gSea)"/>
+  <rect y="740" width="1600" height="160" fill="#0A2833"/>
+  <g class="a out" data-s="2" data-f=".25">
+    <path d="M0 730 L800 730 M840 730 L1600 730" stroke="#3A5A68" stroke-width="10" fill="none"/>
+    <g transform="translate(820,730)" class="blink" style="animation-duration:.6s"><path d="M-22 -22 L22 22 M22 -22 L-22 22" stroke="#E2604A" stroke-width="9" stroke-linecap="round"/></g>
+  </g>
+  <text x="820" y="690" class="lbl w mid a fio" data-s="0" data-s2="1">cabo quebrado</text>
+  <path d="M0 730 Q 600 730 790 215 Q 980 730 1600 730" class="a fio" data-s="2" data-f=".25" data-s2="2" data-f2=".8" fill="none" stroke="#3A5A68" stroke-width="10"/>
+  <path d="M0 730 L1600 730" class="a fade" data-s="2" data-f=".86" fill="none" stroke="#2FA37A" stroke-width="10"/>
+  <g transform="translate(600,190)"><g class="a sail" data-s="1"><g class="bob"><use href="#ship" width="440" height="220"/></g></g></g>
+  <path d="M0 330 q40 -14 80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".7"/>
+  <g transform="translate(820,420)"><circle r="300" fill="none" stroke="#FFC83D" stroke-width="5" class="ring3" data-s="2"/></g>
+  <g transform="translate(790,150)"><g class="a pop" data-s="2" data-f=".52"><circle r="34" fill="#2FA37A" stroke="#FFFFFF" stroke-width="5"/><path d="M-14 0 L-4 11 L15 -10" stroke="#FFFFFF" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></g>
+  <g class="a fade" data-s="1">
+    <rect x="1130" y="30" width="430" height="270" rx="18" fill="#FFFFFF" stroke="#12303A" stroke-width="4"/>
+    <text x="1154" y="74" class="lbl s" style="fill:#52707A">o navio de reparo</text>
+  </g>
+  <g class="a up" data-s="2"><circle cx="1172" cy="117" r="18" fill="#12303A"/><text x="1172" y="125" class="lbl s w mid">1</text><text x="1204" y="126" class="lbl s">localiza o problema</text></g>
+  <g class="a up" data-s="2" data-f=".25"><circle cx="1172" cy="167" r="18" fill="#12303A"/><text x="1172" y="175" class="lbl s w mid">2</text><text x="1204" y="176" class="lbl s">puxa até a superfície</text></g>
+  <g class="a up" data-s="2" data-f=".5"><circle cx="1172" cy="217" r="18" fill="#12303A"/><text x="1172" y="225" class="lbl s w mid">3</text><text x="1204" y="226" class="lbl s">conserta no navio</text></g>
+  <g class="a up" data-s="2" data-f=".78"><circle cx="1172" cy="267" r="18" fill="#12303A"/><text x="1172" y="275" class="lbl s w mid">4</text><text x="1204" y="276" class="lbl s">devolve ao fundo</text></g>
+</g>
+
+<!-- 13 · Chegada em Lisboa -->
+<g class="scene" id="sc13">
+  <use href="#map" width="1600" height="900"/>
+  <path d="M330 462 Q 780 60 1305 215" fill="none" stroke="#E2604A" stroke-width="6" stroke-linecap="round" opacity=".9"/>
+  <g transform="translate(330,462)"><circle r="13" fill="#E2604A" stroke="#FFFFFF" stroke-width="4"/></g>
+  <g transform="translate(1305,215)"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="4" class="ring" data-s="0" data-f=".45"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="46" class="lbl end">Lisboa</text></g>
+  <path id="p13" d="M330 462 Q 780 60 1305 215" fill="none"/>
+  <g class="trav" data-path="p13" data-s="0" data-dur="2.6"><use href="#photo" x="-36" y="-29" width="72" height="58"/></g>
+  <g class="a up" data-s="0" data-f=".5">
+    <rect x="1080" y="330" width="470" height="410" rx="28" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/>
+    <use href="#theo" x="1100" y="390" width="180" height="334"/>
+    <rect x="1310" y="370" width="200" height="320" rx="26" fill="#12303A"/><rect x="1324" y="394" width="172" height="272" rx="14" fill="#F7FAFB"/>
+  </g>
+  <g class="a pop" data-s="0" data-f=".85"><use href="#photo" x="1335" y="460" width="150" height="120"/></g>
+  <g class="a pop" data-s="0" data-f=".9"><text x="1410" y="630" class="lbl s mid" style="fill:#2FA37A">chegou!</text></g>
+  <g transform="translate(640,560)"><g class="a pop" data-s="1">
+    <rect x="-18" y="-152" width="36" height="26" rx="6" fill="#12303A"/>
+    <circle r="124" fill="#FFFFFF" stroke="#12303A" stroke-width="9"/>
+    <g stroke="#12303A" stroke-width="5" stroke-linecap="round"><path d="M0 -104 V-88 M104 0 H88 M0 104 V88 M-104 0 H-88"/></g>
+    <line x1="0" y1="0" x2="0" y2="-92" stroke="#E2604A" stroke-width="8" stroke-linecap="round" class="a sweep" data-s="1" data-o=".5"/>
+    <circle r="11" fill="#12303A"/>
+    <text y="178" class="lbl mid" style="font-size:36px">menos de 1 segundo</text>
+  </g></g>
+</g>
+
+<!-- 14 · A nuvem tem pés -->
+<g class="scene" id="sc14">
+  <rect width="1600" height="900" fill="#DCEBF2"/>
+  <rect y="600" width="1100" height="300" fill="#9C8A6E"/>
+  <rect x="1100" y="560" width="500" height="340" fill="url(#gSea)"/>
+  <path d="M1100 600 L1100 560" stroke="#12303A" stroke-width="4"/>
+  <path d="M1100 870 Q1300 840 1600 870 L1600 900 L1100 900Z" fill="#062130"/>
+  <line x1="0" y1="600" x2="1100" y2="600" stroke="#12303A" stroke-width="4"/>
+  <text x="60" y="150" class="h2s a up" data-s="0">Onde está a internet?</text>
+  <g class="a up" data-s="1" data-f=".02">
+    <g stroke="#12303A" stroke-width="10"><line x1="110" y1="430" x2="110" y2="600"/><line x1="250" y1="430" x2="250" y2="600"/><line x1="390" y1="430" x2="390" y2="600"/></g>
+    <path d="M110 442 Q180 470 250 442 Q320 470 390 442" fill="none" stroke="#12303A" stroke-width="4"/>
+    <text x="250" y="410" class="lbl s mid">fios dos postes</text>
+  </g>
+  <g class="a up" data-s="1" data-f=".17"><use href="#tower" x="470" y="330" width="100" height="270"/><text x="520" y="315" class="lbl s mid">antenas</text></g>
+  <g class="a fade" data-s="1" data-f=".36">
+    <path d="M0 660 H1100 M0 700 H1100" stroke="#FFC83D" stroke-width="8" stroke-dasharray="30 14"/>
+    <text x="300" y="745" class="lbl s w mid">cabos debaixo das ruas</text>
+  </g>
+  <g class="a up" data-s="1" data-f=".55">
+    <rect x="660" y="400" width="250" height="200" fill="#F4F8F9" stroke="#12303A" stroke-width="5"/>
+    <g fill="#12303A"><rect x="680" y="420" width="60" height="160" rx="4"/><rect x="755" y="420" width="60" height="160" rx="4"/><rect x="830" y="420" width="60" height="160" rx="4"/></g>
+    <g fill="#4FD18B" class="blink" style="animation-duration:.8s"><circle cx="692" cy="440" r="4"/><circle cx="767" cy="470" r="4"/><circle cx="842" cy="450" r="4"/><circle cx="692" cy="520" r="4"/><circle cx="842" cy="540" r="4"/></g>
+    <text x="785" y="380" class="lbl s mid">prédios cheios de computadores</text>
+  </g>
+  <g class="a fade" data-s="1" data-f=".82">
+    <path d="M1100 860 Q1300 830 1600 860" fill="none" stroke="#FFC83D" stroke-width="8"/>
+    <text x="1490" y="820" class="lbl s w mid">fundo do mar</text>
+  </g>
+  <g class="a fio" data-s="2" data-f=".1" data-s2="3">
+    <path d="M1060 250 L1040 596" pathLength="1" class="a draw" data-s="2" data-f=".1" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1120 250 L1080 596" pathLength="1" class="a draw" data-s="2" data-f=".1" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+    <ellipse cx="1030" cy="598" rx="22" ry="9" fill="#12303A"/><ellipse cx="1070" cy="598" rx="22" ry="9" fill="#12303A"/>
+  </g>
+  <g class="a fade" data-s="3">
+    <path d="M1150 250 L1190 862" pathLength="1" class="a draw" data-s="3" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1230 250 L1280 858" pathLength="1" class="a draw" data-s="3" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+    <ellipse cx="1200" cy="864" rx="22" ry="9" fill="#12303A"/><ellipse cx="1290" cy="860" rx="22" ry="9" fill="#12303A"/>
+  </g>
+  <g transform="translate(1150,150)"><g class="float"><use href="#cloud" x="-210" y="-118" width="420" height="236"/></g></g>
+  <text x="1590" y="330" class="lbl end a fio" data-s="2" data-f=".4" data-s2="3">a nuvem tem os pés no chão</text>
+  <text x="1590" y="520" class="lbl end a fade" data-s="3" data-o=".6" style="fill:#12303A">no fundo do oceano!</text>
+</g>
+
+<!-- 15 · Próxima pergunta -->
+<g class="scene" id="sc15">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <text x="800" y="170" class="lbl mid a fade" data-s="0" style="font-size:36px">Se a internet é feita de coisas tão concretas…</text>
+  <g class="a pop" data-s="0" data-f=".6"><rect x="120" y="260" width="420" height="150" rx="20" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><text x="330" y="355" class="h2s mid" style="font-size:52px">Quem constrói?</text></g>
+  <g class="a pop" data-s="0" data-f=".73"><rect x="590" y="260" width="420" height="150" rx="20" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><text x="800" y="355" class="h2s mid" style="font-size:52px">Quem cuida?</text></g>
+  <g class="a pop" data-s="0" data-f=".85"><rect x="1060" y="260" width="420" height="150" rx="20" fill="#FFC83D" stroke="#12303A" stroke-width="5"/><text x="1270" y="355" class="h2s mid" style="font-size:52px">Quem paga?</text></g>
+  <g class="a up" data-s="1"><use href="#lia" x="80" y="500" width="160" height="297"/></g>
+  <g class="a up" data-s="1" data-o=".2"><use href="#theo" x="1360" y="500" width="160" height="297"/></g>
+  <text x="800" y="600" class="h1s mid a stamp" data-s="1" style="fill:#E2604A;font-size:84px">Até a próxima aula!</text>
+</g>
+</svg>
+    <div class="chipsec" id="chip"></div>
+    <div class="cap" id="cap" aria-live="off"></div>
+    <button class="bigplay" id="bigplay" aria-label="Assistir ao motion"><svg viewBox="0 0 24 24"><path d="M5 3 L21 12 L5 21Z" fill="currentColor"/></svg></button>
+  </div>
+
+  <div class="controls">
+    <button class="btn primary" id="play" aria-label="Reproduzir">▶ Play</button>
+    <span class="time" id="time">0:00 / 0:00</span>
+    <div class="track"><input type="range" id="scrub" min="0" max="100" step="0.05" value="0" aria-label="Linha do tempo"><div class="ticks" id="ticks"></div></div>
+    <label class="toggle"><input type="checkbox" id="capOn" checked> Legendas</label>
+    <button class="btn" id="fs">Tela cheia</button>
+  </div>
+
+  <section class="scenes">
+    <h2>Cenas</h2>
+    <p class="hint">A minutagem segue um ritmo de leitura de cerca de 150 palavras por minuto. Clique em uma cena para ir direto a ela.</p>
+    <div id="chapters"></div>
+  </section>
+</div>
+
+<script>
+const DATA = [
+ {sec:"Provocando a reflexão inicial", name:"Onde está a internet?", text:"Olá, estudantes! Vamos começar com uma pergunta que parece simples: onde está a internet agora? Se pedíssemos para alguém apontar para a internet, para onde essa pessoa apontaria? Para o céu? Para o roteador? Para o celular?"},
+ {sec:"Provocando a reflexão inicial", name:"A ideia de nuvem", text:"Muita gente responde “está na nuvem”. E a palavra nuvem faz a gente imaginar algo leve, flutuando no céu, invisível. Mas hoje vamos descobrir que a internet é muito mais pesada, concreta e surpreendente do que uma nuvem."},
+ {sec:"Provocando a reflexão inicial", name:"Lia e Theo", text:"Para essa investigação, vamos ter companhia. Esta é a Lia. Ela mora em Fortaleza e quer mandar uma foto para o primo Theo, que mora em Lisboa, do outro lado do oceano. Vamos seguir essa foto e descobrir por onde ela passa."},
+ {sec:"Acompanhando os primeiros passos da foto", name:"Do celular ao roteador", text:"Então, a Lia tira a foto, escolhe o Theo na lista de conversas e aperta “enviar”. O primeiro trecho da viagem é curtinho: a foto sai do celular como uma onda invisível, parecida com as ondas do rádio, e vai até o roteador de Wi-Fi da casa dela. Se ela estiver na rua, usando os dados móveis, essa onda vai até uma antena, aquelas torres altas que vemos em cima de prédios e morros."},
+ {sec:"Acompanhando os primeiros passos da foto", name:"Do ar para o fio", text:"Até aqui, a viagem foi pelo ar. Mas é só o comecinho. Do roteador em diante, a foto entra em um fio. E a partir desse ponto, quase toda a viagem acontece dentro de cabos."},
+ {sec:"Viajando pelos cabos da cidade", name:"Riachos que viram rio", text:"Esse fio sai da casa da Lia e se junta a outros fios, de outras casas, como riachos que se juntam para formar um rio. Os fios correm pelos postes e por baixo das ruas até chegar à empresa que vende a internet para a família dela."},
+ {sec:"Viajando pelos cabos da cidade", name:"Fibra óptica", text:"Muitos desses cabos são feitos de fibra óptica. Imaginem um fio de vidro mais fino que um fio de cabelo, por onde a informação viaja como luz. É como se alguém, lá no começo do fio, piscasse uma lanterna muito rápido, acendendo e apagando milhões de vezes por segundo. Cada piscada carrega um pedacinho da foto. E a luz viaja tão rápido que conseguiria dar várias voltas no Brasil no tempo de um piscar de olhos."},
+ {sec:"Chegando ao litoral", name:"Um oceano no caminho", text:"Agora vem o grande desafio: o Theo está em Portugal. Entre Fortaleza e Lisboa existe um oceano inteiro. Como a foto atravessa o Atlântico?"},
+ {sec:"Chegando ao litoral", name:"Satélite ou cabo?", text:"Muita gente imagina que é por satélite. Satélites existem e ajudam em lugares muito isolados, mas a resposta principal é outra, e bem mais surpreendente: quase toda a informação que viaja entre continentes passa por cabos colocados no fundo do mar. São os cabos submarinos."},
+ {sec:"Chegando ao litoral", name:"Fortaleza, porta dos cabos", text:"E aqui vai uma curiosidade sobre a nossa região: Fortaleza é um dos lugares do Brasil onde mais chegam cabos submarinos. Ou seja, muita informação que entra e sai do país passa pela praia de uma cidade do Nordeste. Um desses cabos liga justamente Fortaleza a Portugal, e é por ele que a foto da Lia pode viajar."},
+ {sec:"Mergulhando com o cabo submarino", name:"Por dentro do cabo", text:"Como é um cabo desses? Perto da praia, ele é grosso e protegido por camadas de metal, porque ali corre mais risco: âncoras de navio, redes de pesca, pedras. Já no fundo do oceano, onde quase nada chega, ele pode ser fino, mais ou menos da grossura de uma mangueira de jardim. E lá dentro, no centro, estão aqueles fios de vidro por onde a luz corre."},
+ {sec:"Mergulhando com o cabo submarino", name:"No fundo do mar", text:"Esse cabo atravessa milhares de quilômetros pelo fundo do mar, passando por planícies escuras, montanhas submarinas e peixes que nunca viram a luz do sol. E, ao longo do caminho, existem pequenos aparelhos que dão um “empurrãozinho” na luz, para que ela não fique fraca demais antes de chegar ao outro lado."},
+ {sec:"Mergulhando com o cabo submarino", name:"O navio de reparo", text:"E se o cabo quebrar? Existem navios especializados em consertar cabos. Eles localizam o ponto do problema, puxam o cabo até a superfície, fazem o reparo no próprio navio e devolvem o cabo para o fundo do mar."},
+ {sec:"Revelando o que é a “nuvem”", name:"Chegada em Lisboa", text:"Do outro lado, em Portugal, o cabo sai do mar, entra na terra, segue por mais fios e chega até o celular do Theo. Toda essa viagem, que parece um filme de aventura, acontece em menos de um segundo."},
+ {sec:"Revelando o que é a “nuvem”", name:"A nuvem tem pés", text:"Então, voltando à nossa pergunta: onde está a internet? Ela está nos fios dos postes, nas antenas, nos cabos debaixo das ruas, nos prédios cheios de computadores e no fundo do mar. A nuvem, na verdade, tem os pés no chão. Ou melhor, no fundo do oceano."},
+ {sec:"Revelando o que é a “nuvem”", name:"A próxima pergunta", text:"E isso traz uma nova pergunta, que vamos investigar nas próximas aulas: se a internet é feita de coisas tão concretas, quem constrói, quem cuida e quem paga por tudo isso? Até a próxima aula!"}
+];
+const WPS = 2.55, LEAD = .6, GAP = .35, TAIL = 1.1;
+
+// ---------- montar a linha do tempo ----------
+let T = 0;
+DATA.forEach((s,i)=>{
+  s.sent = s.text.match(/[^.!?]+[.!?]+[”"]?/g).map(x=>x.trim());
+  s.st=[]; s.du=[];
+  let c = LEAD;
+  s.sent.forEach(x=>{ const d = x.split(/\s+/).length / WPS + .25; s.st.push(c); s.du.push(d); c += d + GAP; });
+  s.dur = c + TAIL; s.start = T; T += s.dur;
+  s.el = document.getElementById('sc'+i);
+  s.el.style.display = 'none';
+  const at = (el, k) => {
+    const si = +(el.dataset['s'+k] ?? 0), f = +(el.dataset['f'+k] ?? 0), o = +(el.dataset['o'+k] ?? 0);
+    return (s.st[si] ?? 0) + f*(s.du[si] ?? 0) + o;
+  };
+  s.el.querySelectorAll('[data-s]').forEach(el=>{
+    if (el.classList.contains('trav')) return;
+    el.style.setProperty('--d', at(el,'').toFixed(2)+'s');
+    if (el.dataset.s2 !== undefined) el.style.setProperty('--d2', at(el,'2').toFixed(2)+'s');
+  });
+  s.trav = [...s.el.querySelectorAll('.trav')].map(el=>{
+    const p = document.getElementById(el.dataset.path);
+    return { el, p, len: 0, start: at(el,''), dur:+el.dataset.dur,
+      loop: !!el.dataset.loop, gap:+(el.dataset.gap||0),
+      rep: el.dataset.rep ? el.dataset.rep.split(',').map(Number) : null };
+  });
+});
+const TOTAL = T;
+
+// anéis de blindagem do cabo
+document.querySelectorAll('[data-ring]').forEach(g=>{
+  const [n,R,r,fill] = g.dataset.ring.split(',');
+  for(let k=0;k<+n;k++){ const a = k/ n*Math.PI*2;
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',(Math.cos(a)*R).toFixed(1)); c.setAttribute('cy',(Math.sin(a)*R).toFixed(1));
+    c.setAttribute('r',r); c.setAttribute('fill',fill); c.setAttribute('stroke','#4B575C'); c.setAttribute('stroke-width','2');
+    g.appendChild(c); }
+});
+
+// ---------- UI ----------
+const $ = id => document.getElementById(id);
+const fmt = s => { s = Math.max(0, Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
+$('scrub').max = TOTAL.toFixed(2);
+$('meta').textContent = `Motion narrado · ${DATA.length} cenas · ${fmt(TOTAL)} de duração`;
+DATA.forEach(s=>{ const i = document.createElement('i'); i.style.left = (s.start/TOTAL*100)+'%'; $('ticks').appendChild(i); });
+
+const chapWrap = $('chapters'); let secEl = null, lastSec = null;
+DATA.forEach((s,i)=>{
+  if (s.sec !== lastSec){ lastSec = s.sec; secEl = document.createElement('div'); secEl.className='sec';
+    secEl.innerHTML = `<h3></h3><div class="list"></div>`; secEl.querySelector('h3').textContent = s.sec; chapWrap.appendChild(secEl); }
+  const b = document.createElement('button'); b.className='sc'; b.type='button';
+  b.innerHTML = `<span class="tc"></span><b></b><span></span>`;
+  b.children[0].textContent = fmt(s.start); b.children[1].textContent = s.name; b.children[2].textContent = s.sent[0];
+  b.addEventListener('click',()=>{ started = true; $('bigplay').hidden = true; t = s.start + .01; render(); $('stage').scrollIntoView({behavior:'smooth',block:'nearest'}); });
+  s.btn = b; secEl.querySelector('.list').appendChild(b);
+});
+
+let t = 0, cur = -1, anims = [], playing = false, started = false, dragging = false;
+
+function sceneAt(x){ let i = DATA.length-1; for(let k=0;k<DATA.length;k++){ if (x < DATA[k].start + DATA[k].dur){ i = k; break; } } return i; }
+
+function render(){
+  const i = sceneAt(t), s = DATA[i];
+  if (i !== cur){
+    if (cur >= 0){ DATA[cur].el.style.display='none'; DATA[cur].btn.removeAttribute('aria-current'); }
+    s.el.style.display=''; cur = i; s.btn.setAttribute('aria-current','true');
+    anims = s.el.getAnimations({subtree:true});
+    $('chip').textContent = s.sec;
+  }
+  const local = t - s.start;
+  for (const a of anims){ a.pause(); a.currentTime = local*1000; }
+  for (const tr of s.trav){
+    let p = (local - tr.start) / tr.dur;
+    if (tr.loop && p >= 0){ const per = tr.dur + tr.gap; p = ((local - tr.start) % per) / tr.dur; }
+    if (p < 0 || (tr.loop && p > 1)){ tr.el.style.opacity = 0; continue; }
+    p = Math.min(1, p);
+    if (!tr.len) tr.len = tr.p.getTotalLength();
+    const pt = tr.p.getPointAtLength(p * tr.len);
+    tr.el.setAttribute('transform', `translate(${pt.x.toFixed(1)},${pt.y.toFixed(1)})`);
+    let op = 1;
+    if (tr.rep){ const prev = Math.max(0, ...tr.rep.filter(r=>r<=pt.x)); op = Math.max(.22, 1 - (pt.x - prev)/650); }
+    tr.el.style.opacity = op;
+  }
+  // legenda
+  let k = -1; s.st.forEach((st,j)=>{ if (local >= st - .1) k = j; });
+  $('cap').textContent = (started && $('capOn').checked && k >= 0) ? s.sent[k] : '';
+  if (!dragging) $('scrub').value = t.toFixed(2);
+  $('time').textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+}
+
+let last = null;
+function loop(ts){
+  if (!playing){ last = null; return; }
+  if (last !== null) t += (ts - last)/1000;
+  last = ts;
+  if (t >= TOTAL){ t = TOTAL - .01; setPlaying(false); }
+  render();
+  if (playing) requestAnimationFrame(loop);
+}
+function setPlaying(v){
+  if (v && !started){ started = true; t = 0; $('bigplay').hidden = true; }
+  if (v && t >= TOTAL - .05) t = 0;
+  playing = v;
+  $('play').textContent = v ? '❚❚ Pausar' : '▶ Play';
+  $('play').setAttribute('aria-label', v ? 'Pausar' : 'Reproduzir');
+  if (v) requestAnimationFrame(loop); else render();
+}
+$('play').addEventListener('click', ()=>setPlaying(!playing));
+$('bigplay').addEventListener('click', ()=>setPlaying(true));
+$('scrub').addEventListener('input', e=>{ dragging = true; if(!started){started=true;$('bigplay').hidden=true;} t = +e.target.value; render(); });
+$('scrub').addEventListener('change', ()=>{ dragging = false; });
+$('capOn').addEventListener('change', render);
+$('fs').addEventListener('click', ()=>{ const el = $('stage'); try{ const r = document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen?.(); r && r.catch && r.catch(()=>{}); }catch(e){} });
+document.addEventListener('keydown', e=>{
+  if (e.target.closest && e.target.closest('input,button,select,textarea')) return;
+  if (e.code === 'Space' || e.key === 'k'){ e.preventDefault(); setPlaying(!playing); }
+  if (e.key === 'ArrowRight'){ t = Math.min(TOTAL-.01, t+5); if(!started){started=true;$('bigplay').hidden=true;} render(); }
+  if (e.key === 'ArrowLeft'){ t = Math.max(0, t-5); render(); }
+});
+
+// quadro de capa: Lia, Theo e o caminho no mapa
+const P = DATA[2]; t = P.start + P.st[3] + 4.2; render();
+</script>
+
+</body></html>
