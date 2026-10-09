@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>O caminho de um clique</title>
+<title>Rede de redes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap">
 <style>
@@ -42,6 +42,8 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
 .track input{width:100%;accent-color:var(--accent);margin:0;height:28px}
 .ticks{position:absolute;inset:0;pointer-events:none}
 .ticks i{position:absolute;top:50%;width:2px;height:12px;margin-top:-6px;background:var(--muted);opacity:.45}
+.btn.speed{min-width:64px;justify-content:center;font-variant-numeric:tabular-nums}
+.btn.speed[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
 .toggle{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);cursor:pointer}
 .toggle input{accent-color:var(--accent);width:18px;height:18px}
 
@@ -116,13 +118,17 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
 @keyframes flow{0%{opacity:0;transform:translateX(0)}6%{opacity:1}94%{opacity:1}100%{opacity:0;transform:translateX(1290px)}}
 @keyframes swim{from{transform:translateX(0)}to{transform:translateX(-2000px)}}
 @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+.bin{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-weight:700;font-size:38px;fill:#12303A;letter-spacing:2px}
+.cap b{color:#FFC83D;font-weight:700}
+.lid{animation:lid 2.4s ease-in-out var(--d,0s) infinite both;transform-box:fill-box;transform-origin:center}
+@keyframes lid{0%,80%,100%{transform:scaleY(0)}88%{transform:scaleY(1)}}
 </style>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">8º ano · Aula 1 · A internet é física</div>
-    <h1>Por dentro da internet: o caminho de um clique</h1>
-    <p class="sub" id="meta">Motion narrado · Onde está a internet?</p>
+    <div class="eyebrow">8º ano · Por dentro da internet</div>
+    <h1>Rede de redes: a viagem de uma foto em bits</h1>
+    <p class="sub" id="meta">Motion narrado</p>
   </header>
 
   <div class="stage" id="stage">
@@ -210,16 +216,26 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
     <text x="1510" y="590" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="24" letter-spacing="4" fill="#8C7A55">ÁFRICA</text>
     <text x="880" y="560" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-style="italic" font-size="40" fill="#5E95A8">Oceano Atlântico</text>
   </symbol>
+  <pattern id="pix" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0 H0 V20" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".85"/></pattern>
+  <symbol id="cluster" viewBox="-100 -100 200 200">
+    <circle r="92" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/>
+    <g stroke="#12303A" stroke-width="4"><line x1="0" y1="0" x2="-50" y2="-38"/><line x1="0" y1="0" x2="52" y2="-30"/><line x1="0" y1="0" x2="-44" y2="46"/><line x1="0" y1="0" x2="48" y2="44"/></g>
+    <rect x="-22" y="-14" width="44" height="28" rx="7" fill="#12303A"/>
+    <g fill="currentColor" stroke="#12303A" stroke-width="3"><circle cx="-50" cy="-38" r="15"/><circle cx="52" cy="-30" r="15"/><circle cx="-44" cy="46" r="15"/><circle cx="48" cy="44" r="15"/></g>
+  </symbol>
+  <symbol id="computer" viewBox="0 0 120 100"><rect x="4" y="4" width="112" height="70" rx="6" fill="#12303A"/><rect x="12" y="12" width="96" height="54" rx="2" fill="#BFDCE5"/><rect x="52" y="74" width="16" height="14" fill="#12303A"/><rect x="32" y="88" width="56" height="9" rx="4" fill="#12303A"/></symbol>
+  <symbol id="tv" viewBox="0 0 160 110"><rect x="4" y="4" width="152" height="88" rx="8" fill="#12303A"/><rect x="12" y="12" width="136" height="72" rx="3" fill="#7FC4D8"/><path d="M40 92 L30 108 M120 92 L130 108" stroke="#12303A" stroke-width="7" stroke-linecap="round"/></symbol>
+  <symbol id="car" viewBox="0 0 180 88"><path d="M10 64 L14 42 Q18 34 30 32 L52 30 L74 8 Q78 4 86 4 L126 4 Q134 4 140 10 L160 32 Q172 34 174 46 L174 64Z" fill="#E2604A" stroke="#12303A" stroke-width="5" stroke-linejoin="round"/><path d="M80 14 L64 30 L104 30 L104 14Z M114 14 L114 30 L148 30 L134 14Z" fill="#BFDCE5" stroke="#12303A" stroke-width="3"/><circle cx="46" cy="66" r="17" fill="#12303A"/><circle cx="46" cy="66" r="7" fill="#D9DEE2"/><circle cx="138" cy="66" r="17" fill="#12303A"/><circle cx="138" cy="66" r="7" fill="#D9DEE2"/></symbol>
 </defs>
 
 <!-- 0 · Onde está a internet? -->
 <g class="scene" id="sc0">
   <rect width="1600" height="900" fill="#E3EEF1"/>
-  <text x="800" y="220" class="h1s mid a up" data-s="1">Onde está a internet?</text>
-  <g transform="translate(1330,190)"><g class="a pop" data-s="2"><g class="float"><text class="qm mid" y="60">?</text></g></g></g>
-  <g transform="translate(400,480)"><g class="a pop" data-s="3"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#cloud" x="-100" y="-58" width="200" height="112"/><text y="200" class="lbl mid">Para o céu?</text></g></g>
-  <g transform="translate(800,480)"><g class="a pop" data-s="4"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#router" x="-95" y="-58" width="190" height="105"/><text y="200" class="lbl mid">Para o roteador?</text></g></g>
-  <g transform="translate(1200,480)"><g class="a pop" data-s="5"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#phone" x="-35" y="-64" width="70" height="128"/><text y="200" class="lbl mid">Para o celular?</text></g></g>
+  <text x="800" y="220" class="h1s mid a up" data-s="0">Onde está a internet?</text>
+  <g transform="translate(1330,190)"><g class="a pop" data-s="1"><g class="float"><text class="qm mid" y="60">?</text></g></g></g>
+  <g transform="translate(400,480)"><g class="a pop" data-s="2"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#cloud" x="-100" y="-58" width="200" height="112"/><text y="200" class="lbl mid">Para o céu?</text></g></g>
+  <g transform="translate(800,480)"><g class="a pop" data-s="3"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#router" x="-95" y="-58" width="190" height="105"/><text y="200" class="lbl mid">Para o roteador?</text></g></g>
+  <g transform="translate(1200,480)"><g class="a pop" data-s="4"><circle r="132" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#phone" x="-35" y="-64" width="70" height="128"/><text y="200" class="lbl mid">Para o celular?</text></g></g>
 </g>
 
 <!-- 1 · A ideia de nuvem -->
@@ -244,7 +260,7 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
   <path d="M330 462 Q 780 60 1305 215" pathLength="1" class="a draw" data-s="3" style="--len:3s" fill="none" stroke="#E2604A" stroke-width="6" stroke-linecap="round"/>
   <path id="p2" d="M330 462 Q 780 60 1305 215" fill="none"/>
   <g transform="translate(330,462)"><g class="a pop" data-s="2"><circle r="44" fill="none" stroke="#E2604A" stroke-width="4" class="ring"/><circle r="13" fill="#E2604A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="-24" class="lbl end">Fortaleza</text></g></g>
-  <g transform="translate(1305,215)"><g class="a pop" data-s="2" data-f=".55"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="4" class="ring"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="46" class="lbl end">Lisboa</text></g></g>
+  <g transform="translate(1305,215)"><g class="a pop" data-s="2" data-f=".55"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="4" class="ring"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/></g></g>
   <g class="a up" data-s="1"><use href="#lia" x="60" y="520" width="170" height="316"/></g>
   <g class="a pop" data-s="1" data-o=".4"><rect x="226" y="600" width="88" height="48" rx="24" fill="#E2604A"/><text x="270" y="634" class="lbl w mid">Lia</text></g>
   <g class="a up" data-s="2" data-f=".6"><use href="#theo" x="1420" y="40" width="150" height="278"/></g>
@@ -252,100 +268,230 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
   <g class="trav" data-path="p2" data-s="3" data-o=".3" data-dur="3.4"><use href="#photo" x="-36" y="-29" width="72" height="58"/></g>
 </g>
 
-<!-- 3 · Do celular ao roteador -->
+
+<!-- 3 · Rede de redes -->
 <g class="scene" id="sc3">
   <rect width="1600" height="900" fill="#E3EEF1"/>
-  <g transform="translate(470,330)"><circle r="230" fill="none" stroke="#FFC83D" stroke-width="7" class="ring" data-s="1"/><circle r="230" fill="none" stroke="#FFC83D" stroke-width="7" class="ring" data-s="1" data-o=".6"/><circle r="230" fill="none" stroke="#FFC83D" stroke-width="7" class="ring" data-s="1" data-o="1.2"/></g>
-  <g class="a up" data-s="0">
-    <rect x="170" y="80" width="300" height="640" rx="42" fill="#12303A"/>
-    <rect x="186" y="110" width="268" height="590" rx="26" fill="#F7FAFB"/>
-    <rect x="198" y="122" width="244" height="78" rx="18" fill="#DDEFF3"/>
-    <circle cx="238" cy="161" r="22" fill="#2FA37A"/><text x="272" y="171" class="lbl">Theo</text>
-    <rect x="200" y="620" width="240" height="62" rx="31" fill="#FFFFFF" stroke="#C9D7DC" stroke-width="3"/>
-    <text x="226" y="660" class="lbl s" style="fill:#7D959D">mensagem</text>
+  <text x="800" y="160" class="lbl mid a fio" data-s="0" data-s2="2" style="font-size:38px">uma ideia que vai amarrar toda a unidade</text>
+  <g fill="none" stroke="#E2604A" stroke-width="8" stroke-linecap="round">
+    <path d="M330 440 L800 350" pathLength="1" class="a draw" data-s="2" data-f=".05"/>
+    <path d="M800 350 L1270 440" pathLength="1" class="a draw" data-s="2" data-f=".1"/>
+    <path d="M330 440 L560 660" pathLength="1" class="a draw" data-s="2" data-f=".15"/>
+    <path d="M560 660 L1040 660" pathLength="1" class="a draw" data-s="2" data-f=".2"/>
+    <path d="M1040 660 L1270 440" pathLength="1" class="a draw" data-s="2" data-f=".25"/>
+    <path d="M800 350 L560 660" pathLength="1" class="a draw" data-s="2" data-f=".3"/>
+    <path d="M800 350 L1040 660" pathLength="1" class="a draw" data-s="2" data-f=".35"/>
   </g>
-  <g class="a pop" data-s="0" data-f=".35"><use href="#photo" x="232" y="300" width="200" height="160"/></g>
-  <g transform="translate(408,651)"><g class="a press" data-s="0" data-f=".85"><circle r="27" fill="#FFC83D" stroke="#12303A" stroke-width="3"/><path d="M-8 -11 L12 0 L-8 11Z" fill="#12303A"/></g></g>
-  <g transform="translate(500,662)"><g class="a pop" data-s="0" data-f=".85"><text class="lbl dk">enviar!</text></g></g>
-  <g class="a fade" data-s="1">
-    <path d="M480 330 Q 760 200 1090 520" fill="none" stroke="#12303A" stroke-width="4" stroke-dasharray="6 16" stroke-linecap="round" opacity=".45"/>
-    <line x1="960" y1="620" x2="1290" y2="620" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
-    <use href="#router" x="980" y="498" width="220" height="121"/>
-    <text x="1090" y="682" class="lbl mid">roteador Wi-Fi</text>
-  </g>
-  <text x="790" y="200" class="lbl mid a fade" data-s="1" data-f=".3" style="font-style:italic">uma onda invisível, como as do rádio</text>
-  <path id="p3a" d="M480 330 Q 760 200 1090 520" fill="none"/>
-  <g class="trav" data-path="p3a" data-s="1" data-o=".6" data-dur="2.6"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
-  <g class="a up" data-s="2">
-    <path d="M1250 900 Q1420 560 1600 610 L1600 900Z" fill="#9DBF8E" stroke="#12303A" stroke-width="4"/>
-    <use href="#tower" x="1390" y="300" width="130" height="316"/>
-    <text x="1370" y="360" class="lbl end">antena</text>
-    <text x="1370" y="396" class="lbl s end" style="fill:#52707A">dados móveis</text>
-  </g>
-  <g transform="translate(1455,313)"><circle r="150" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="2" data-o="1"/><circle r="150" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="2" data-o="1.6"/></g>
-  <path id="p3b" d="M480 360 Q 980 120 1455 313" fill="none"/>
-  <g class="trav" data-path="p3b" data-s="2" data-o="1" data-dur="2.8"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+  <g transform="translate(330,440)"><g class="a pop" data-s="1" data-f=".1"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#E2604A"/></g></g>
+  <g transform="translate(800,350)"><g class="a pop" data-s="1" data-f=".25"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#FFC83D"/></g></g>
+  <g transform="translate(1270,440)"><g class="a pop" data-s="1" data-f=".4"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#2FA37A"/></g></g>
+  <g transform="translate(560,660)"><g class="a pop" data-s="1" data-f=".55"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#5B8DEF"/></g></g>
+  <g transform="translate(1040,660)"><g class="a pop" data-s="1" data-f=".7"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#2E7F98"/></g></g>
+  <text x="800" y="175" class="h1s mid a stamp" data-s="2" data-f=".55" style="fill:#E2604A;font-size:100px">rede de redes</text>
 </g>
 
-<!-- 4 · Do ar para o fio -->
+<!-- 4 · Rede local -->
 <g class="scene" id="sc4">
   <rect width="1600" height="900" fill="#E3EEF1"/>
-  <line x1="160" y1="200" x2="1440" y2="200" stroke="#C6D6DB" stroke-width="20" stroke-linecap="round"/>
-  <path d="M160 200 H250" pathLength="1" class="a draw" data-s="0" style="--len:.8s" stroke="#FFC83D" stroke-width="20" stroke-linecap="round" fill="none"/>
-  <path d="M250 200 H1440" pathLength="1" class="a draw" data-s="3" style="--len:3s" stroke="#2E7F98" stroke-width="20" stroke-linecap="round" fill="none"/>
-  <circle cx="160" cy="200" r="20" fill="#E2604A" stroke="#FFFFFF" stroke-width="5"/><text x="160" y="265" class="lbl s mid">Fortaleza</text>
-  <circle cx="1440" cy="200" r="20" fill="#2FA37A" stroke="#FFFFFF" stroke-width="5"/><text x="1440" y="265" class="lbl s mid">Lisboa</text>
-  <text x="205" y="150" class="lbl mid dk a fade" data-s="0">pelo ar</text>
-  <g class="a pop" data-s="1"><path d="M250 240 L300 300" stroke="#12303A" stroke-width="4"/><text x="310" y="330" class="lbl" style="font-style:italic">é só o comecinho!</text></g>
-  <text x="845" y="150" class="lbl mid a fade" data-s="3" data-o=".6">quase toda a viagem: dentro de cabos</text>
-  <g transform="translate(360,450)"><circle r="120" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0"/><circle r="120" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0" data-o=".7"/></g>
-  <use href="#router" x="220" y="430" width="280" height="154"/>
-  <path d="M480 545 Q 560 620 680 620 L1600 620" pathLength="1" class="a draw" data-s="2" style="--len:1.8s" fill="none" stroke="#12303A" stroke-width="20" stroke-linecap="round"/>
-  <path d="M480 545 Q 560 620 680 620 L1600 620" pathLength="1" class="a draw" data-s="2" style="--len:1.8s" fill="none" stroke="#2E7F98" stroke-width="6" stroke-linecap="round"/>
-  <path id="p4" d="M480 545 Q 560 620 680 620 L1600 620" fill="none"/>
-  <g class="trav" data-path="p4" data-s="2" data-o="1" data-dur="2.6" data-loop="1" data-gap=".5"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
-  <text x="1040" y="560" class="lbl mid a up" data-s="2" data-o=".4">a foto entra em um fio</text>
+  <text x="800" y="118" class="lbl mid a fade" data-s="0" style="font-size:32px">rede: dispositivos conectados que trocam informações</text>
+  <path d="M430 300 L800 140 L1170 300Z" fill="#E2604A" stroke="#12303A" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="460" y="300" width="680" height="440" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/>
+  <g class="a up" data-s="1"><use href="#lia" x="170" y="460" width="150" height="279"/></g>
+  <text x="245" y="430" class="lbl s mid a fade" data-s="1">casa da Lia</text>
+  <g stroke="#2E7F98" stroke-width="5" stroke-linecap="round" fill="none">
+    <path d="M800 640 L570 500" pathLength="1" class="a draw" data-s="0" data-f=".5" style="--len:.8s"/>
+    <path d="M800 640 L800 490" pathLength="1" class="a draw" data-s="0" data-f=".6" style="--len:.8s"/>
+    <path d="M800 640 L1050 510" pathLength="1" class="a draw" data-s="0" data-f=".7" style="--len:.8s"/>
+  </g>
+  <g class="a pop" data-s="0" data-f=".05"><use href="#router" x="700" y="590" width="200" height="110"/></g>
+  <g class="a pop" data-s="0" data-f=".15"><use href="#phone" x="540" y="380" width="60" height="110"/></g>
+  <g class="a pop" data-s="0" data-f=".25"><use href="#computer" x="730" y="360" width="140" height="117"/></g>
+  <g class="a pop" data-s="0" data-f=".35"><use href="#tv" x="960" y="380" width="180" height="124"/></g>
+  <text x="570" y="530" class="lbl s mid a fade" data-s="1" data-f=".3">celular</text>
+  <text x="800" y="520" class="lbl s mid a fade" data-s="1" data-f=".42">computador</text>
+  <text x="1050" y="545" class="lbl s mid a fade" data-s="1" data-f=".55">TV</text>
+  <text x="800" y="728" class="lbl s mid a fade" data-s="1" data-f=".7">mesmo roteador</text>
+  <rect x="490" y="330" width="620" height="420" rx="36" fill="none" stroke="#E2604A" stroke-width="5" stroke-dasharray="16 12" class="a fade" data-s="2"/>
+  <g class="a stamp" data-s="2" data-f=".3"><rect x="650" y="208" width="300" height="66" rx="33" fill="#12303A"/><text x="800" y="253" class="lbl w mid" style="font-size:34px">rede local</text></g>
 </g>
 
-<!-- 5 · Riachos que viram rio -->
+<!-- 5 · Redes conectadas -->
 <g class="scene" id="sc5">
-  <rect width="1600" height="900" fill="#DCEBF2"/>
-  <rect y="620" width="1600" height="60" fill="#8E9AA0"/><path d="M0 650 H1600" stroke="#E3EEF1" stroke-width="4" stroke-dasharray="40 30"/>
-  <rect y="680" width="1600" height="220" fill="#9C8A6E"/>
-  <g stroke="#12303A" stroke-width="12"><line x1="900" y1="316" x2="900" y2="620"/><line x1="1070" y1="316" x2="1070" y2="620"/><line x1="1240" y1="316" x2="1240" y2="620"/></g>
-  <g stroke="#12303A" stroke-width="8" stroke-linecap="round"><line x1="874" y1="330" x2="926" y2="330"/><line x1="1044" y1="330" x2="1096" y2="330"/><line x1="1214" y1="330" x2="1266" y2="330"/></g>
-  <use href="#house" x="60" y="490" width="130" height="130" style="color:#E2604A"/>
-  <use href="#house" x="210" y="490" width="130" height="130" style="color:#FFC83D"/>
-  <use href="#house" x="360" y="490" width="130" height="130" style="color:#2FA37A"/>
-  <use href="#house" x="510" y="490" width="130" height="130" style="color:#5B8DEF"/>
-  <use href="#house" x="660" y="490" width="130" height="130" style="color:#E2604A"/>
-  <text x="125" y="474" class="lbl s mid">casa da Lia</text>
-  <g fill="none" stroke="#12303A" stroke-width="4" stroke-linecap="round">
-    <path d="M155 530 C155 420 700 350 900 330" pathLength="1" class="a draw" data-s="0" data-f=".02"/>
-    <path d="M305 530 C305 430 700 360 900 330" pathLength="1" class="a draw" data-s="0" data-f=".12"/>
-    <path d="M455 530 C455 440 720 370 900 330" pathLength="1" class="a draw" data-s="0" data-f=".22"/>
-    <path d="M605 530 C605 450 760 380 900 330" pathLength="1" class="a draw" data-s="0" data-f=".32"/>
-    <path d="M755 530 C755 470 820 400 900 330" pathLength="1" class="a draw" data-s="0" data-f=".42"/>
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <text x="800" y="96" class="lbl mid a fade" data-s="2" style="font-size:34px">milhões de redes, no mundo inteiro, conectadas</text>
+  <g fill="none" stroke="#12303A" stroke-width="5" stroke-linecap="round">
+    <path d="M300 340 L800 310" pathLength="1" class="a draw" data-s="2" data-f=".1"/>
+    <path d="M800 310 L1300 340" pathLength="1" class="a draw" data-s="2" data-f=".14"/>
+    <path d="M300 340 L150 640" pathLength="1" class="a draw" data-s="2" data-f=".18"/>
+    <path d="M300 340 L400 690" pathLength="1" class="a draw" data-s="2" data-f=".22"/>
+    <path d="M300 340 L100 460" pathLength="1" class="a draw" data-s="2" data-f=".26"/>
+    <path d="M800 310 L650 620" pathLength="1" class="a draw" data-s="2" data-f=".3"/>
+    <path d="M800 310 L950 690" pathLength="1" class="a draw" data-s="2" data-f=".34"/>
+    <path d="M1300 340 L1200 630" pathLength="1" class="a draw" data-s="2" data-f=".38"/>
+    <path d="M1300 340 L1450 680" pathLength="1" class="a draw" data-s="2" data-f=".42"/>
+    <path d="M1300 340 L1510 460" pathLength="1" class="a draw" data-s="2" data-f=".46"/>
+    <path d="M400 690 L650 620" pathLength="1" class="a draw" data-s="2" data-f=".5"/>
+    <path d="M650 620 L950 690" pathLength="1" class="a draw" data-s="2" data-f=".54"/>
+    <path d="M950 690 L1200 630" pathLength="1" class="a draw" data-s="2" data-f=".58"/>
   </g>
-  <path d="M900 330 L1240 330 L1240 712 L1420 712 L1420 620" pathLength="1" class="a draw" data-s="0" data-f=".6" style="--len:3.4s" fill="none" stroke="#12303A" stroke-width="14" stroke-linejoin="round"/>
-  <path d="M900 330 L1240 330 L1240 712 L1420 712 L1420 620" pathLength="1" class="a draw" data-s="0" data-f=".6" style="--len:3.4s" fill="none" stroke="#2E7F98" stroke-width="5" stroke-linejoin="round"/>
-  <text x="560" y="300" class="lbl mid a fade" data-s="0" data-f=".5" style="font-style:italic">riachos que se juntam num rio</text>
-  <g class="a up" data-s="1" data-f=".3">
-    <rect x="1300" y="250" width="260" height="370" rx="8" fill="#F4F8F9" stroke="#12303A" stroke-width="5"/>
-    <rect x="1320" y="270" width="220" height="86" rx="8" fill="#12303A"/>
-    <text x="1430" y="306" class="lbl s w mid">provedor de</text><text x="1430" y="338" class="lbl s w mid">internet</text>
-    <g fill="#4FD18B"><circle cx="1340" cy="400" r="7"/><circle cx="1340" cy="440" r="7"/><circle cx="1340" cy="480" r="7"/><circle cx="1340" cy="520" r="7"/></g>
-    <g fill="#C9D7DC"><rect x="1360" y="392" width="170" height="16" rx="4"/><rect x="1360" y="432" width="170" height="16" rx="4"/><rect x="1360" y="472" width="170" height="16" rx="4"/><rect x="1360" y="512" width="170" height="16" rx="4"/></g>
-    <g fill="#FFC83D" class="blink"><circle cx="1340" cy="420" r="5"/><circle cx="1340" cy="500" r="5"/></g>
-  </g>
-  <text x="1090" y="722" class="lbl s mid w a fade" data-s="1" data-f=".1">por baixo das ruas</text>
-  <text x="1070" y="290" class="lbl s mid a fade" data-s="1">pelos postes</text>
-  <path id="p5" d="M155 530 C155 420 700 350 900 330 L1240 330 L1240 712 L1420 712 L1420 620" fill="none"/>
-  <g class="trav" data-path="p5" data-s="1" data-o=".4" data-dur="5"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+  <g class="a fade" data-s="0"><text x="300" y="225" class="lbl s mid">casa da Lia</text></g>
+  <g transform="translate(300,340)"><g class="a fade" data-s="0"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#E2604A"/></g></g>
+  <g class="a fade" data-s="0" data-f=".3"><text x="800" y="195" class="lbl s mid">escola</text></g>
+  <g transform="translate(800,310)"><g class="a pop" data-s="0" data-f=".3"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#FFC83D"/></g></g>
+  <g class="a fade" data-s="1"><text x="1300" y="225" class="lbl s mid">empresa</text></g>
+  <g transform="translate(1300,340)"><g class="a pop" data-s="1"><use href="#cluster" x="-90" y="-90" width="180" height="180" style="color:#2FA37A"/></g></g>
+  <g transform="translate(150,640)"><g class="a pop" data-s="2" data-f=".12"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#5B8DEF"/></g></g>
+  <g transform="translate(400,690)"><g class="a pop" data-s="2" data-f=".17"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#2E7F98"/></g></g>
+  <g transform="translate(100,460)"><g class="a pop" data-s="2" data-f=".22"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#FFC83D"/></g></g>
+  <g transform="translate(650,620)"><g class="a pop" data-s="2" data-f=".27"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#E2604A"/></g></g>
+  <g transform="translate(950,690)"><g class="a pop" data-s="2" data-f=".32"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#2FA37A"/></g></g>
+  <g transform="translate(1200,630)"><g class="a pop" data-s="2" data-f=".37"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#5B8DEF"/></g></g>
+  <g transform="translate(1450,680)"><g class="a pop" data-s="2" data-f=".42"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#FFC83D"/></g></g>
+  <g transform="translate(1510,460)"><g class="a pop" data-s="2" data-f=".47"><use href="#cluster" x="-48" y="-48" width="96" height="96" style="color:#E2604A"/></g></g>
+  <g class="a stamp" data-s="3"><rect x="540" y="420" width="520" height="132" rx="24" fill="#FFC83D" stroke="#12303A" stroke-width="5"/><text x="800" y="484" class="h2s mid" style="font-size:56px">protocolos</text><text x="800" y="527" class="lbl s mid">regras combinadas · vistas no 7º ano</text></g>
 </g>
 
-<!-- 6 · Fibra óptica -->
+<!-- 6 · Bits -->
 <g class="scene" id="sc6">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <g class="a pop" data-s="0"><use href="#photo" x="110" y="300" width="270" height="216"/></g>
+  <path d="M410 408 L640 408" pathLength="1" class="a draw" data-s="0" data-f=".4" style="--len:.8s" stroke="#12303A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M618 390 L644 408 L618 426" class="a fade" data-s="0" data-f=".6" stroke="#12303A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="525" y="375" class="lbl s mid a fade" data-s="0" data-f=".5">mudar de forma</text>
+  <g class="a up" data-s="1"><use href="#computer" x="670" y="300" width="240" height="200"/></g>
+  <text x="790" y="555" class="lbl s mid a fade" data-s="1" data-f=".3">não enxerga cores nem rostos</text>
+  <g transform="translate(1190,380)"><g class="a pop" data-s="2" data-f=".35"><circle r="92" fill="#FFC83D" opacity=".3" class="glow"/><circle r="62" fill="#FFC83D" stroke="#12303A" stroke-width="5"/><text y="22" class="h2s mid">1</text><text y="122" class="lbl s mid">ligado</text></g></g>
+  <g transform="translate(1420,380)"><g class="a pop" data-s="2" data-f=".5"><circle r="62" fill="#6E7F86" stroke="#12303A" stroke-width="5"/><text y="22" class="h2s mid" style="fill:#FFFFFF">0</text><text y="122" class="lbl s mid">desligado</text></g></g>
+  <g class="a up" data-s="3"><rect x="1060" y="560" width="490" height="120" rx="20" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><text x="1100" y="644" class="h2s" style="font-size:66px">bit</text><text x="1230" y="612" class="lbl s">a menor unidade</text><text x="1230" y="646" class="lbl s">de informação</text></g>
+  <g class="a pop" data-s="4"><rect x="110" y="590" width="330" height="64" rx="32" fill="#12303A"/><text x="275" y="632" class="lbl w mid">código binário</text></g>
+  <text x="460" y="633" class="lbl dk a stamp" data-s="5">de novo!</text>
+</g>
+
+<!-- 7 · A foto vira zeros e uns -->
+<g class="scene" id="sc7">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <g class="a pop" data-s="0"><use href="#photo" x="100" y="200" width="400" height="320"/></g>
+  <rect x="145" y="245" width="310" height="200" fill="url(#pix)" class="a fade" data-s="0" data-f=".25"/>
+  <path d="M520 360 L585 360" stroke="#12303A" stroke-width="6" stroke-linecap="round" class="a fade" data-s="0" data-f=".35"/>
+  <g class="bin">
+    <text x="610" y="250" class="a fade" data-s="0" data-f=".4">0110100101110010011010010110</text>
+    <text x="610" y="302" class="a fade" data-s="0" data-f=".47">1011001110100110010111001011</text>
+    <text x="610" y="354" class="a fade" data-s="0" data-f=".54">0010110111010010110100111010</text>
+    <text x="610" y="406" class="a fade" data-s="0" data-f=".61">1101001011100101001101101001</text>
+    <text x="610" y="458" class="a fade" data-s="0" data-f=".68">0111010010110111001011010110</text>
+    <text x="610" y="510" class="a fade" data-s="0" data-f=".75">1001011101001101011010010111</text>
+  </g>
+  <g class="a fade" data-s="1">
+    <rect x="0" y="575" width="1600" height="84" fill="#12303A"/>
+    <text x="0" y="632" class="bin swim" data-s="1" style="fill:#FFC83D;animation-duration:24s">10100010000110001000010000110010001000011111110000111110010101100111110011001111101100100100111001110111110000000010110011100111110110000100100000100010111100111110001110</text>
+  </g>
+  <text x="800" y="712" class="lbl mid a fade" data-s="1" data-f=".2">é essa sequência que vai viajar</text>
+  <text x="800" y="120" class="lbl mid a stamp" data-s="2" data-f=".3" style="font-size:40px">como levar zeros e uns até Portugal?</text>
+</g>
+
+<!-- 8 · Ondas de rádio e Wi-Fi -->
+<g class="scene" id="sc8">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <rect x="70" y="170" width="1460" height="390" rx="40" fill="none" stroke="#E2604A" stroke-width="5" stroke-dasharray="16 12" class="a fade" data-s="4" data-f=".35"/>
+  <text x="1500" y="545" class="lbl s end a fade" data-s="4" data-f=".45" style="fill:#C2412D">rede local, sem fio</text>
+  <g class="a up" data-s="0"><use href="#phone" x="110" y="200" width="170" height="312"/></g>
+  <g class="a pop" data-s="0" data-f=".2"><use href="#photo" x="145" y="290" width="100" height="80"/></g>
+  <g transform="translate(195,430)"><g class="a press" data-s="0" data-f=".55"><rect x="-52" y="-21" width="104" height="42" rx="21" fill="#FFC83D" stroke="#12303A" stroke-width="3"/><text y="8" class="lbl s mid" style="font-size:22px">enviar</text></g></g>
+  <g class="a pop" data-s="1"><rect x="630" y="70" width="340" height="60" rx="30" fill="#12303A"/><text x="800" y="111" class="lbl w mid">1º trecho: pelo ar</text></g>
+  <text x="300" y="330" class="bin a fade" data-s="2" style="font-size:30px">0110</text>
+  <path d="M300 400 q25 -45 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" pathLength="1" class="a draw" data-s="2" data-f=".2" style="--len:2s" fill="none" stroke="#FFC83D" stroke-width="7" stroke-linecap="round"/>
+  <path id="q8" d="M300 400 q25 -45 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" fill="none"/>
+  <text x="700" y="330" class="lbl mid a fade" data-s="2" data-f=".3">ondas de rádio</text>
+  <g transform="translate(680,680)"><g class="a up" data-s="2" data-f=".5">
+    <use href="#car" x="-90" y="-44" width="180" height="88"/>
+    <g class="float"><path d="M36 -92 V-132 L66 -140 V-100" fill="none" stroke="#12303A" stroke-width="5" stroke-linejoin="round"/><circle cx="28" cy="-92" r="9" fill="#12303A"/><circle cx="58" cy="-100" r="9" fill="#12303A"/></g>
+    <text x="120" y="-14" class="lbl s">como no rádio do carro</text>
+    <text x="120" y="20" class="lbl s" style="fill:#52707A">só que em outra frequência</text>
+  </g></g>
+  <g class="a pop" data-s="3"><use href="#router" x="1130" y="320" width="280" height="154"/><text x="1270" y="515" class="lbl mid">roteador</text></g>
+  <g class="trav" data-path="q8" data-s="3" data-f=".1" data-dur="2.6"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+  <g class="a stamp" data-s="4"><rect x="1170" y="230" width="200" height="64" rx="32" fill="#FFC83D" stroke="#12303A" stroke-width="3"/><text x="1270" y="274" class="lbl mid" style="font-size:34px">Wi-Fi</text></g>
+</g>
+
+<!-- 9 · Dados móveis -->
+<g class="scene" id="sc9">
+  <rect width="1600" height="900" fill="#DCEBF2"/>
+  <path d="M1150 740 Q1360 560 1600 600 L1600 740Z" fill="#9DBF8E" stroke="#12303A" stroke-width="4"/>
+  <rect y="740" width="1600" height="160" fill="#9C8A6E"/>
+  <rect x="880" y="470" width="240" height="270" fill="#B9C9CF" stroke="#12303A" stroke-width="4"/>
+  <g fill="#7FC4D8" stroke="#12303A" stroke-width="2"><rect x="910" y="500" width="40" height="40"/><rect x="980" y="500" width="40" height="40"/><rect x="1050" y="500" width="40" height="40"/><rect x="910" y="580" width="40" height="40"/><rect x="980" y="580" width="40" height="40"/><rect x="1050" y="580" width="40" height="40"/><rect x="910" y="660" width="40" height="40"/><rect x="1050" y="660" width="40" height="40"/></g>
+  <use href="#tower" x="935" y="150" width="130" height="320"/>
+  <g class="a pop" data-s="0" data-f=".75"><use href="#tower" x="1390" y="420" width="80" height="196"/></g>
+  <g transform="translate(1000,185)"><circle r="160" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0" data-f=".45"/><circle r="160" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0" data-f=".45" data-o=".7"/></g>
+  <g class="a up" data-s="0"><use href="#lia" x="180" y="462" width="150" height="279"/></g>
+  <g class="a fade" data-s="0" data-f=".15"><use href="#phone" x="300" y="560" width="32" height="58"/></g>
+  <path d="M340 570 Q 640 260 990 200" pathLength="1" class="a draw" data-s="0" data-f=".3" style="--len:1.4s" fill="none" stroke="#12303A" stroke-width="4" stroke-linecap="round"/>
+  <path id="q9" d="M340 570 Q 640 260 990 200" fill="none"/>
+  <g class="trav" data-path="q9" data-s="0" data-f=".45" data-dur="1.8" data-loop="1" data-gap=".6"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <g class="a pop" data-s="0" data-f=".38"><rect x="400" y="470" width="96" height="56" rx="14" fill="#12303A"/><text x="448" y="508" class="lbl am mid">4G</text></g>
+  <g class="a pop" data-s="0" data-f=".46"><rect x="510" y="470" width="96" height="56" rx="14" fill="#12303A"/><text x="558" y="508" class="lbl am mid">5G</text></g>
+  <text x="1120" y="440" class="lbl s a fade" data-s="0" data-f=".6">antena da operadora</text>
+  <g class="a stamp" data-s="1"><rect x="760" y="44" width="480" height="70" rx="35" fill="#FFC83D" stroke="#12303A" stroke-width="4"/><text x="1000" y="92" class="lbl mid" style="font-size:34px">estação rádio base</text></g>
+</g>
+
+<!-- 10 · Limites do sem fio -->
+<g class="scene" id="sc10">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <rect y="700" width="1600" height="200" fill="#C9D7DC"/>
+  <g transform="translate(220,470)"><circle r="330" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0"/><circle r="330" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0" data-o=".6"/><circle r="330" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="0" data-o="1.2"/></g>
+  <use href="#router" x="100" y="420" width="240" height="132"/>
+  <g class="a up" data-s="0" data-f=".45">
+    <rect x="820" y="270" width="64" height="430" fill="#C98A6B" stroke="#12303A" stroke-width="4"/>
+    <path d="M820 320 H884 M820 370 H884 M820 420 H884 M820 470 H884 M820 520 H884 M820 570 H884 M820 620 H884 M820 670 H884 M852 270 V320 M852 370 V420 M852 470 V520 M852 570 V620 M852 670 V700" stroke="#12303A" stroke-width="2"/>
+    <text x="852" y="250" class="lbl s mid">paredes</text>
+  </g>
+  <g transform="translate(450,330)" class="a fade" data-s="0" data-f=".2"><rect x="0" y="-20" width="18" height="20" fill="#2FA37A"/><rect x="26" y="-35" width="18" height="35" fill="#2FA37A"/><rect x="52" y="-50" width="18" height="50" fill="#2FA37A"/><rect x="78" y="-65" width="18" height="65" fill="#2FA37A"/><text x="48" y="40" class="lbl s mid">perto</text></g>
+  <g transform="translate(650,330)" class="a fade" data-s="0" data-f=".32"><rect x="0" y="-20" width="18" height="20" fill="#E5A82B"/><rect x="26" y="-35" width="18" height="35" fill="#E5A82B"/><rect x="52" y="-50" width="18" height="50" fill="#C6D6DB"/><rect x="78" y="-65" width="18" height="65" fill="#C6D6DB"/><text x="48" y="40" class="lbl s mid">longe</text></g>
+  <g transform="translate(990,330)" class="a fade" data-s="0" data-f=".55"><rect x="0" y="-20" width="18" height="20" fill="#E2604A"/><rect x="26" y="-35" width="18" height="35" fill="#C6D6DB"/><rect x="52" y="-50" width="18" height="50" fill="#C6D6DB"/><rect x="78" y="-65" width="18" height="65" fill="#C6D6DB"/><text x="48" y="40" class="lbl s mid">depois da parede</text></g>
+  <g class="a fade" data-s="0" data-f=".3"><path d="M400 600 H770" stroke="#12303A" stroke-width="4"/><path d="M752 588 L772 600 L752 612" stroke="#12303A" stroke-width="4" fill="none"/><text x="585" y="585" class="lbl s mid">distância</text></g>
+  <text x="800" y="150" class="h2s mid a stamp" data-s="1" style="font-size:54px">viagem pelo ar: sempre curta</text>
+  <path d="M300 545 Q 300 750 430 750 L1600 750" pathLength="1" class="a draw" data-s="2" style="--len:1.6s" fill="none" stroke="#12303A" stroke-width="18" stroke-linecap="round"/>
+  <path d="M300 545 Q 300 750 430 750 L1600 750" pathLength="1" class="a draw" data-s="2" style="--len:1.6s" fill="none" stroke="#2E7F98" stroke-width="6" stroke-linecap="round"/>
+  <path id="q10" d="M300 545 Q 300 750 430 750 L1600 750" fill="none"/>
+  <g class="trav" data-path="q10" data-s="2" data-f=".4" data-dur="2.2" data-loop="1" data-gap=".3"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <text x="1150" y="720" class="lbl s mid a fade" data-s="2" data-f=".3">o sinal entra em um cabo</text>
+</g>
+
+<!-- 11 · Provedor e última milha -->
+<g class="scene" id="sc11">
+  <rect width="1600" height="900" fill="#DCEBF2"/>
+  <rect y="620" width="1600" height="60" fill="#8E9AA0"/>
+  <rect y="680" width="1600" height="220" fill="#9C8A6E"/>
+  <use href="#house" x="80" y="450" width="170" height="170" style="color:#E2604A"/>
+  <text x="165" y="440" class="lbl s mid">casa da Lia</text>
+  <g class="a fade" data-s="0" data-f=".1">
+    <rect x="640" y="270" width="280" height="350" rx="8" fill="#F4F8F9" stroke="#12303A" stroke-width="5"/>
+    <g fill="#4FD18B"><circle cx="680" cy="340" r="8"/><circle cx="680" cy="390" r="8"/><circle cx="680" cy="440" r="8"/><circle cx="680" cy="490" r="8"/><circle cx="680" cy="540" r="8"/></g>
+    <g fill="#C9D7DC"><rect x="702" y="331" width="190" height="18" rx="4"/><rect x="702" y="381" width="190" height="18" rx="4"/><rect x="702" y="431" width="190" height="18" rx="4"/><rect x="702" y="481" width="190" height="18" rx="4"/><rect x="702" y="531" width="190" height="18" rx="4"/></g>
+    <g fill="#FFC83D" class="blink"><circle cx="680" cy="365" r="5"/><circle cx="680" cy="465" r="5"/><circle cx="680" cy="565" r="5"/></g>
+  </g>
+  <path d="M230 600 L230 652 L700 652 L700 620" pathLength="1" class="a draw" data-s="0" style="--len:1.6s" fill="none" stroke="#12303A" stroke-width="14" stroke-linejoin="round"/>
+  <path d="M230 600 L230 652 L700 652 L700 620" pathLength="1" class="a draw" data-s="0" style="--len:1.6s" fill="none" stroke="#2E7F98" stroke-width="5" stroke-linejoin="round"/>
+  <path id="q11" d="M230 600 L230 652 L700 652 L700 620" fill="none"/>
+  <g class="trav" data-path="q11" data-s="0" data-f=".35" data-dur="2.4"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+  <g class="a stamp" data-s="1"><rect x="600" y="200" width="360" height="64" rx="32" fill="#FFC83D" stroke="#12303A" stroke-width="4"/><text x="780" y="243" class="lbl mid">provedor de internet</text></g>
+  <g fill="none" stroke="#12303A" stroke-width="5" stroke-linecap="round">
+    <path d="M920 400 L1180 340" pathLength="1" class="a draw" data-s="2" data-f=".1"/>
+    <path d="M920 460 L1360 540" pathLength="1" class="a draw" data-s="2" data-f=".2"/>
+    <path d="M1180 340 L1440 290" pathLength="1" class="a draw" data-s="2" data-f=".3"/>
+    <path d="M1180 340 L1360 540" pathLength="1" class="a draw" data-s="2" data-f=".35"/>
+    <path d="M1440 290 L1360 540" pathLength="1" class="a draw" data-s="2" data-f=".4"/>
+  </g>
+  <g transform="translate(1180,340)"><g class="a pop" data-s="2" data-f=".15"><use href="#cluster" x="-70" y="-70" width="140" height="140" style="color:#FFC83D"/></g></g>
+  <g transform="translate(1440,290)"><g class="a pop" data-s="2" data-f=".3"><use href="#cluster" x="-70" y="-70" width="140" height="140" style="color:#2FA37A"/></g></g>
+  <g transform="translate(1360,540)"><g class="a pop" data-s="2" data-f=".4"><use href="#cluster" x="-70" y="-70" width="140" height="140" style="color:#5B8DEF"/></g></g>
+  <text x="1310" y="170" class="lbl mid a fade" data-s="2" data-f=".45">o resto da rede de redes</text>
+  <path d="M230 410 v-26 h470 v26" pathLength="1" class="a draw" data-s="3" style="--len:1s" fill="none" stroke="#E2604A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <g class="a pop" data-s="3" data-f=".3"><rect x="335" y="318" width="260" height="56" rx="28" fill="#E2604A"/><text x="465" y="356" class="lbl w mid">última milha</text></g>
+</g>
+
+<!-- 12 · Fibra: luz acesa e apagada -->
+<g class="scene" id="sc12">
   <rect width="1600" height="900" fill="#0B2A3A"/>
   <g transform="translate(300,230)"><g class="a pop" data-s="0">
     <circle r="150" fill="#1B3B4A" stroke="#6E8A96" stroke-width="10"/><circle r="108" fill="#0E2633"/>
@@ -367,37 +513,84 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
     <circle cx="170" cy="650" r="34" fill="#FFC83D" class="blink" style="animation-duration:.22s" opacity=".85"/>
   </g>
   <g clip-path="url(#fiberClip)">
-    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o=".5"/>
-    <rect x="170" y="644" width="34" height="12" rx="4" fill="#7FC4D8" class="flow" data-s="2" data-o=".75"/>
-    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o="1"/>
-    <rect x="170" y="644" width="34" height="12" rx="4" fill="#2FA37A" class="flow" data-s="2" data-o="1.25"/>
-    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o="1.5"/>
-    <rect x="170" y="644" width="34" height="12" rx="4" fill="#E7D6AE" class="flow" data-s="2" data-o="1.75"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o=".4"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o=".65"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o="1.15"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o="1.4"/>
+    <rect x="170" y="644" width="34" height="12" rx="4" fill="#FFC83D" class="flow" data-s="2" data-o="1.9"/>
   </g>
-  <text x="820" y="600" class="lbl am mid a fade" data-s="3">cada piscada leva um pedacinho da foto</text>
-  <g class="a pop" data-s="3" data-f=".5"><use href="#photo" x="1490" y="612" width="96" height="77"/></g>
-  <g transform="translate(1150,40)"><g class="a fade" data-s="4">
-    <path id="p6" d="M60 40 L140 20 L200 50 L260 80 L290 120 L270 170 L240 230 L190 280 L150 300 L120 270 L130 220 L90 200 L50 160 L20 110 L30 60Z" fill="#1B3B4A" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
-    <text x="150" y="170" class="lbl s w mid">Brasil</text>
-    <g class="trav" data-path="p6" data-s="4" data-o=".3" data-dur=".9" data-loop="1"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
-  </g></g>
-  <text x="1300" y="380" class="lbl am mid a fade" data-s="4" data-f=".4">várias voltas num piscar de olhos</text>
+  <g class="a pop" data-s="2" data-f=".35"><rect x="900" y="200" width="70" height="40" rx="8" fill="#FFC83D"/><text x="990" y="232" class="lbl w">luz acesa = 1</text></g>
+  <g class="a pop" data-s="2" data-f=".6"><rect x="900" y="270" width="70" height="40" rx="8" fill="#1B3B4A" stroke="#6E8A96" stroke-width="3"/><text x="990" y="302" class="lbl w">luz apagada = 0</text></g>
+  <text x="1300" y="400" class="lbl am mid a fade" data-s="3" data-f=".3">bilhões de vezes por segundo</text>
 </g>
 
-<!-- 7 · Um oceano no caminho -->
-<g class="scene" id="sc7">
+<!-- 13 · Reflexão interna total -->
+<g class="scene" id="sc13">
+  <rect width="1600" height="900" fill="#0B2A3A"/>
+  <text x="800" y="160" class="lbl w mid a fio" data-s="0" data-s2="1" style="font-size:38px">por que a luz não escapa pelas laterais?</text>
+  <rect x="100" y="380" width="1400" height="160" rx="10" fill="#9FD8EA" fill-opacity=".14" stroke="#CFEFFF" stroke-width="4"/>
+  <g class="a fio" data-s="0" data-f=".35" data-s2="1"><path d="M300 470 L470 250" stroke="#FFC83D" stroke-width="6" stroke-dasharray="14 12" fill="none"/><path d="M448 252 L498 302 M498 252 L448 302" stroke="#E2604A" stroke-width="9" stroke-linecap="round"/></g>
+  <text x="800" y="210" class="h2s mid a stamp" data-s="1" style="fill:#FFC83D;font-size:76px">reflexão interna total</text>
+  <path d="M100 460 L230 390 L360 530 L490 390 L620 530 L750 390 L880 530 L1010 390 L1140 530 L1270 390 L1400 530 L1500 476" pathLength="1" class="a draw" data-s="2" style="--len:2.6s" fill="none" stroke="#FFC83D" stroke-width="6" stroke-linejoin="round"/>
+  <path id="q13" d="M100 460 L230 390 L360 530 L490 390 L620 530 L750 390 L880 530 L1010 390 L1140 530 L1270 390 L1400 530 L1500 476" fill="none"/>
+  <g class="trav" data-path="q13" data-s="2" data-f=".3" data-dur="3" data-loop="1" data-gap=".2"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
+  <text x="800" y="630" class="lbl w mid a fade" data-s="2" data-f=".55">como uma bolinha quicando pelas paredes de um tubo</text>
+  <text x="800" y="330" class="lbl am mid a fade" data-s="3">em zigue-zague, sem sair, por quilômetros</text>
+</g>
+
+<!-- 14 · Largura de banda -->
+<g class="scene" id="sc14">
+  <defs>
+    <clipPath id="roadA"><rect x="100" y="250" width="1400" height="70"/></clipPath>
+    <clipPath id="roadB"><rect x="100" y="460" width="1400" height="280"/></clipPath>
+  </defs>
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <text x="800" y="120" class="h2s mid a stamp" data-s="0" data-f=".55">largura de banda</text>
+  <text x="800" y="170" class="lbl s mid a fade" data-s="0" data-f=".65" style="fill:#52707A">quantos bits o cabo leva por segundo</text>
+  <g class="a fade" data-s="0">
+    <text x="100" y="236" class="lbl s">1 faixa</text>
+    <rect x="100" y="250" width="1400" height="70" fill="#4B575C"/>
+    <g clip-path="url(#roadA)">
+      <rect x="100" y="265" width="90" height="40" rx="10" fill="#E2604A" class="flow" data-s="0" data-o=".3" style="animation-duration:4s"/>
+      <rect x="100" y="265" width="90" height="40" rx="10" fill="#FFC83D" class="flow" data-s="0" data-o="2.3" style="animation-duration:4s"/>
+    </g>
+  </g>
+  <g class="a fade" data-s="1">
+    <text x="100" y="446" class="lbl s">4 faixas</text>
+    <rect x="100" y="460" width="1400" height="280" fill="#4B575C"/>
+    <path d="M100 530 H1500 M100 600 H1500 M100 670 H1500" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="30 24" opacity=".7"/>
+    <g clip-path="url(#roadB)">
+      <rect x="100" y="475" width="90" height="40" rx="10" fill="#E2604A" class="flow" data-s="1" data-o="0" style="animation-duration:4s"/>
+      <rect x="100" y="475" width="90" height="40" rx="10" fill="#FFC83D" class="flow" data-s="1" data-o="1.4" style="animation-duration:4s"/>
+      <rect x="100" y="475" width="90" height="40" rx="10" fill="#2FA37A" class="flow" data-s="1" data-o="2.8" style="animation-duration:4s"/>
+      <rect x="100" y="545" width="90" height="40" rx="10" fill="#5B8DEF" class="flow" data-s="1" data-o=".5" style="animation-duration:4s"/>
+      <rect x="100" y="545" width="90" height="40" rx="10" fill="#E2604A" class="flow" data-s="1" data-o="1.9" style="animation-duration:4s"/>
+      <rect x="100" y="545" width="90" height="40" rx="10" fill="#FFC83D" class="flow" data-s="1" data-o="3.3" style="animation-duration:4s"/>
+      <rect x="100" y="615" width="90" height="40" rx="10" fill="#2FA37A" class="flow" data-s="1" data-o=".2" style="animation-duration:4s"/>
+      <rect x="100" y="615" width="90" height="40" rx="10" fill="#5B8DEF" class="flow" data-s="1" data-o="1.6" style="animation-duration:4s"/>
+      <rect x="100" y="615" width="90" height="40" rx="10" fill="#E2604A" class="flow" data-s="1" data-o="3" style="animation-duration:4s"/>
+      <rect x="100" y="685" width="90" height="40" rx="10" fill="#FFC83D" class="flow" data-s="1" data-o=".8" style="animation-duration:4s"/>
+      <rect x="100" y="685" width="90" height="40" rx="10" fill="#2FA37A" class="flow" data-s="1" data-o="2.2" style="animation-duration:4s"/>
+      <rect x="100" y="685" width="90" height="40" rx="10" fill="#5B8DEF" class="flow" data-s="1" data-o="3.6" style="animation-duration:4s"/>
+    </g>
+  </g>
+  <text x="800" y="420" class="lbl mid a fade" data-s="1" data-f=".35">mais faixas: mais informação ao mesmo tempo</text>
+</g>
+
+<!-- 15 · Um oceano no caminho -->
+<g class="scene" id="sc15">
   <use href="#map" width="1600" height="900"/>
   <g transform="translate(330,462)"><circle r="13" fill="#E2604A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="-24" class="lbl end">Fortaleza</text></g>
-  <g transform="translate(1305,215)"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="5" class="ring" data-s="0"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="46" class="lbl end">Lisboa</text></g>
-  <g class="a pop" data-s="0" data-f=".5"><rect x="1240" y="250" width="200" height="48" rx="24" fill="#2FA37A"/><text x="1340" y="284" class="lbl w mid">Theo está aqui</text></g>
+  <g transform="translate(1305,215)"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="5" class="ring" data-s="0"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/></g>
+  <g class="a pop" data-s="0" data-f=".15"><rect x="1240" y="250" width="200" height="48" rx="24" fill="#2FA37A"/><text x="1340" y="284" class="lbl w mid">Theo está aqui</text></g>
   <g transform="translate(400,410)"><g class="wiggle"><use href="#photo" x="-36" y="-29" width="72" height="58"/></g></g>
-  <path d="M470 470 L1290 250" pathLength="1" class="a draw" data-s="1" style="--len:1.6s" stroke="#12303A" stroke-width="4" stroke-dasharray="1 2" fill="none"/>
-  <g class="a fade" data-s="1" data-f=".5"><rect x="660" y="390" width="300" height="52" rx="26" fill="#FFFFFF" stroke="#12303A" stroke-width="3"/><text x="810" y="426" class="lbl mid">um oceano inteiro</text></g>
-  <g transform="translate(860,320)"><g class="a pop" data-s="2"><text class="qm mid" y="60" style="font-size:240px">?</text></g></g>
+  <path d="M470 470 L1290 250" pathLength="1" class="a draw" data-s="0" data-f=".45" style="--len:1.6s" stroke="#12303A" stroke-width="4" stroke-dasharray="1 2" fill="none"/>
+  <g class="a fade" data-s="0" data-f=".7"><rect x="660" y="390" width="300" height="52" rx="26" fill="#FFFFFF" stroke="#12303A" stroke-width="3"/><text x="810" y="426" class="lbl mid">um oceano inteiro</text></g>
+  <g transform="translate(860,320)"><g class="a pop" data-s="1"><text class="qm mid" y="60" style="font-size:240px">?</text></g></g>
 </g>
 
-<!-- 8 · Satélite ou cabo? -->
-<g class="scene" id="sc8">
+<!-- 16 · Satélite ou cabo? -->
+<g class="scene" id="sc16">
   <rect width="1600" height="900" fill="#DCEBF2"/>
   <rect y="380" width="1600" height="520" fill="url(#gSea)"/>
   <path d="M0 380 q40 -14 80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".7"/>
@@ -410,17 +603,17 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
     <path d="M-40 70 L-560 160 M40 70 L620 160" stroke="#12303A" stroke-width="3" stroke-dasharray="8 12" fill="none"/>
     <text y="110" class="lbl mid">satélite?</text>
   </g></g></g>
-  <text x="1150" y="90" class="lbl s mid a fade" data-s="1" data-f=".1" style="fill:#52707A">ajuda em lugares muito isolados</text>
+  <text x="1150" y="90" class="lbl s mid a fade" data-s="1" data-f=".1" style="fill:#52707A">importantes em lugares isolados</text>
   <path d="M140 380 L170 800 Q 500 770 800 815 T 1430 795 L1460 380" pathLength="1" class="a draw" data-s="1" data-f=".45" style="--len:2.6s" fill="none" stroke="#FFC83D" stroke-width="8" stroke-linejoin="round"/>
   <path id="p8" d="M140 380 L170 800 Q 500 770 800 815 T 1430 795 L1460 380" fill="none"/>
   <g class="trav" data-path="p8" data-s="1" data-f=".7" data-dur="3" data-loop="1"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
   <g class="trav" data-path="p8" data-s="1" data-f=".7" data-o="1.5" data-dur="3" data-loop="1"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
-  <text x="800" y="720" class="lbl w mid a fade" data-s="1" data-f=".6">quase toda a informação entre continentes</text>
-  <text x="800" y="560" class="h2s mid a stamp" data-s="2" style="fill:#FFFFFF;font-size:80px">cabos submarinos</text>
+  <text x="800" y="680" class="lbl w mid a fade" data-s="1" data-f=".6">quase toda a informação entre continentes</text>
+  <text x="800" y="560" class="h2s mid a stamp" data-s="1" data-f=".82" style="fill:#FFFFFF;font-size:80px">cabos submarinos</text>
 </g>
 
-<!-- 9 · Fortaleza -->
-<g class="scene" id="sc9">
+<!-- 17 · Fortaleza -->
+<g class="scene" id="sc17">
   <rect width="1600" height="900" fill="url(#gSea)"/>
   <path d="M0 560 Q 300 520 600 545 Q 800 560 1000 540 Q 1300 510 1600 550 L1600 900 L0 900Z" fill="#F2E3BF"/>
   <path d="M0 590 Q 300 555 600 580 Q 800 595 1000 575 Q 1300 545 1600 585 L1600 900 L0 900Z" fill="#E7D6AE" stroke="#12303A" stroke-width="4"/>
@@ -447,12 +640,16 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
   <path id="p9e" d="M800 550 Q 1050 280 1250 0" fill="none"/>
   <g class="a pop" data-s="2" data-f=".3"><rect x="1250" y="110" width="240" height="56" rx="28" fill="#FFC83D" stroke="#12303A" stroke-width="3"/><text x="1370" y="148" class="lbl mid">rumo a Portugal</text></g>
   <g class="trav" data-path="p9e" data-s="2" data-f=".55" data-dur="2.4"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
-  <g transform="translate(800,550)"><circle r="40" fill="none" stroke="#FFFFFF" stroke-width="4" class="ring"/><rect x="-34" y="-22" width="68" height="44" rx="6" fill="#F4F8F9" stroke="#12303A" stroke-width="4"/></g>
-  <text x="800" y="625" class="lbl s mid">estação de cabos</text>
+  <g fill="none" stroke="#2E7F98" stroke-width="6" stroke-linecap="round">
+    <path d="M800 590 Q 600 640 330 650" pathLength="1" class="a draw" data-s="1" data-f=".55"/>
+    <path d="M800 590 Q 1000 650 1180 650" pathLength="1" class="a draw" data-s="1" data-f=".6"/>
+  </g>
+  <g transform="translate(800,560)"><circle r="56" fill="none" stroke="#FFFFFF" stroke-width="4" class="ring" data-s="1"/><path d="M-40 -14 L0 -40 L40 -14Z" fill="#E2604A" stroke="#12303A" stroke-width="4" stroke-linejoin="round"/><rect x="-34" y="-14" width="68" height="44" fill="#F4F8F9" stroke="#12303A" stroke-width="4"/><rect x="-9" y="6" width="18" height="24" fill="#12303A"/></g>
+  <g class="a pop" data-s="1" data-f=".25"><rect x="860" y="556" width="400" height="88" rx="20" fill="#FFFFFF" stroke="#12303A" stroke-width="4"/><text x="1060" y="594" class="lbl mid">estação de ancoragem</text><text x="1060" y="628" class="lbl s mid" style="fill:#52707A">liga o mar às redes em terra</text></g>
 </g>
 
-<!-- 10 · Por dentro do cabo -->
-<g class="scene" id="sc10">
+<!-- 18 · Por dentro do cabo -->
+<g class="scene" id="sc18">
   <rect width="1600" height="900" fill="#E3EEF1"/>
   <text x="800" y="120" class="h2s mid a up" data-s="0">Como é um cabo desses?</text>
   <g transform="translate(470,440)"><g class="a pop" data-s="1">
@@ -471,36 +668,32 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
   </g></g>
   <g class="a pop" data-s="2" data-f=".5"><circle cx="1390" cy="440" r="42" fill="none" stroke="#2FA37A" stroke-width="16"/><text x="1390" y="530" class="lbl s mid">mangueira</text></g>
   <text x="1285" y="580" class="lbl mid a fade" data-s="2" data-f=".2">no fundo do mar: fino</text>
-  <text x="1285" y="330" class="lbl mid dk a fade" data-s="3">no centro, os fios de vidro</text>
+  <text x="1285" y="330" class="lbl mid dk a fade" data-s="3">no centro, a fibra óptica</text>
 </g>
 
-<!-- 11 · No fundo do mar -->
-<g class="scene" id="sc11">
+
+<!-- 19 · Atenuação -->
+<g class="scene" id="sc19">
   <rect width="1600" height="900" fill="url(#gDeep)"/>
-  <text x="800" y="70" class="lbl s mid a fade" data-s="0" data-f=".75" style="fill:#7FB7C9">a luz do sol não chega aqui</text>
-  <g transform="translate(1750,240)"><g class="swim" data-s="0" data-o="-4"><use href="#fish" x="-50" y="-25" width="100" height="50" style="color:#5FA9BF"/></g></g>
-  <g transform="translate(1750,360)"><g class="swim" data-s="0" data-o="-11" style="animation-duration:22s"><use href="#fish" x="-35" y="-17" width="70" height="35" style="color:#4C8FA3"/></g></g>
-  <g transform="translate(1750,180)"><g class="swim" data-s="0" data-o="-15" style="animation-duration:26s"><use href="#fish" x="-30" y="-15" width="60" height="30" style="color:#3F7C8F"/></g></g>
-  <g transform="translate(1750,450)"><g class="swim" data-s="0" data-o="-7" style="animation-duration:20s"><use href="#fish" x="-45" y="-22" width="90" height="45" style="color:#6CB4C7"/></g></g>
-  <path d="M0 760 L200 760 Q350 760 420 640 Q480 540 560 650 Q620 740 760 760 L1000 760 Q1100 700 1180 600 Q1240 540 1300 660 Q1360 760 1600 760 L1600 900 L0 900Z" fill="#0A2833" stroke="#2C5566" stroke-width="4"/>
-  <path d="M0 752 L200 752 Q350 752 420 632 Q480 532 560 642 Q620 732 760 752 L1000 752 Q1100 692 1180 592 Q1240 532 1300 652 Q1360 752 1600 752" fill="none" stroke="#3A5A68" stroke-width="9"/>
-  <path id="p11" d="M0 752 L200 752 Q350 752 420 632 Q480 532 560 642 Q620 732 760 752 L1000 752 Q1100 692 1180 592 Q1240 532 1300 652 Q1360 752 1600 752" fill="none"/>
-  <g class="trav" data-path="p11" data-s="0" data-dur="6" data-loop="1" data-rep="150,880,1520"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
-  <g class="trav" data-path="p11" data-s="0" data-o="2" data-dur="6" data-loop="1" data-rep="150,880,1520"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
-  <g class="trav" data-path="p11" data-s="0" data-o="4" data-dur="6" data-loop="1" data-rep="150,880,1520"><use href="#dot" x="-20" y="-20" width="40" height="40"/></g>
-  <text x="480" y="500" class="lbl w mid a fade" data-s="0" data-f=".35">montanhas submarinas</text>
-  <text x="880" y="712" class="lbl s w mid a fio" data-s="0" data-f=".25" data-s2="1">planícies escuras</text>
-  <text x="1250" y="260" class="lbl s w mid a fade" data-s="0" data-f=".65" style="fill:#9ED2E2">peixes que nunca viram o sol</text>
-  <g class="a pop" data-s="1" data-f=".1">
-    <g transform="translate(150,752)"><circle r="56" fill="none" stroke="#FFC83D" stroke-width="4" class="ring"/><rect x="-28" y="-14" width="56" height="28" rx="14" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
-    <g transform="translate(880,752)"><circle r="56" fill="none" stroke="#FFC83D" stroke-width="4" class="ring" data-o=".5"/><rect x="-28" y="-14" width="56" height="28" rx="14" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
-    <g transform="translate(1520,750)"><circle r="56" fill="none" stroke="#FFC83D" stroke-width="4" class="ring" data-o="1"/><rect x="-28" y="-14" width="56" height="28" rx="14" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
+  <path d="M200 220 V700 H1460" stroke="#7FB7C9" stroke-width="4" fill="none"/>
+  <text x="160" y="460" class="lbl s w mid" transform="rotate(-90 160 460)">força do sinal</text>
+  <text x="1460" y="745" class="lbl s w end">distância →</text>
+  <g class="a dim" data-s="2"><path d="M200 260 C 520 580, 900 660, 1450 680" pathLength="1" class="a draw" data-s="0" data-f=".1" style="--len:2.6s" fill="none" stroke="#FFC83D" stroke-width="7" stroke-linecap="round"/></g>
+  <text x="760" y="520" class="lbl w a fio" data-s="0" data-f=".5" data-s2="2">a luz vai perdendo força</text>
+  <g class="a fade" data-s="1" data-f=".4"><path d="M200 560 H1460" stroke="#F28B72" stroke-width="3" stroke-dasharray="12 10"/><text x="1455" y="545" class="lbl s end" style="fill:#F28B72">fraco demais</text></g>
+  <text x="1200" y="200" class="h2s mid a stamp" data-s="1" style="fill:#FFFFFF;font-size:64px">atenuação</text>
+  <path d="M200 260 C 300 380, 380 440, 500 470 L500 260 C 600 380, 680 440, 800 470 L800 260 C 900 380, 980 440, 1100 470 L1100 260 C 1200 380, 1280 440, 1400 470 L1450 478" pathLength="1" class="a draw" data-s="2" data-f=".25" style="--len:3s" fill="none" stroke="#4FD18B" stroke-width="7" stroke-linejoin="round"/>
+  <g class="a pop" data-s="2" data-f=".1">
+    <g transform="translate(500,700)"><circle r="44" fill="none" stroke="#FFC83D" stroke-width="4" class="ring"/><rect x="-26" y="-13" width="52" height="26" rx="13" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
+    <g transform="translate(800,700)"><circle r="44" fill="none" stroke="#FFC83D" stroke-width="4" class="ring" data-o=".4"/><rect x="-26" y="-13" width="52" height="26" rx="13" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
+    <g transform="translate(1100,700)"><circle r="44" fill="none" stroke="#FFC83D" stroke-width="4" class="ring" data-o=".8"/><rect x="-26" y="-13" width="52" height="26" rx="13" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
+    <g transform="translate(1400,700)"><circle r="44" fill="none" stroke="#FFC83D" stroke-width="4" class="ring" data-o="1.2"/><rect x="-26" y="-13" width="52" height="26" rx="13" fill="#D9DEE2" stroke="#12303A" stroke-width="3"/></g>
   </g>
-  <g class="a up" data-s="1" data-f=".3"><text x="880" y="680" class="lbl am mid">repetidor</text><text x="880" y="712" class="lbl s w mid">um “empurrãozinho” na luz</text></g>
+  <text x="950" y="630" class="lbl am mid a fade" data-s="2" data-f=".45">amplificadores ou repetidores</text>
 </g>
 
-<!-- 12 · O navio de reparo -->
-<g class="scene" id="sc12">
+<!-- 20 · O navio de reparo -->
+<g class="scene" id="sc20">
   <rect width="1600" height="900" fill="#DCEBF2"/>
   <rect y="330" width="1600" height="570" fill="url(#gSea)"/>
   <rect y="740" width="1600" height="160" fill="#0A2833"/>
@@ -525,77 +718,148 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
   <g class="a up" data-s="2" data-f=".78"><circle cx="1172" cy="267" r="18" fill="#12303A"/><text x="1172" y="275" class="lbl s w mid">4</text><text x="1204" y="276" class="lbl s">devolve ao fundo</text></g>
 </g>
 
-<!-- 13 · Chegada em Lisboa -->
-<g class="scene" id="sc13">
-  <use href="#map" width="1600" height="900"/>
-  <path d="M330 462 Q 780 60 1305 215" fill="none" stroke="#E2604A" stroke-width="6" stroke-linecap="round" opacity=".9"/>
-  <g transform="translate(330,462)"><circle r="13" fill="#E2604A" stroke="#FFFFFF" stroke-width="4"/></g>
-  <g transform="translate(1305,215)"><circle r="44" fill="none" stroke="#2FA37A" stroke-width="4" class="ring" data-s="0" data-f=".45"/><circle r="13" fill="#2FA37A" stroke="#FFFFFF" stroke-width="4"/><text x="-24" y="46" class="lbl end">Lisboa</text></g>
-  <path id="p13" d="M330 462 Q 780 60 1305 215" fill="none"/>
-  <g class="trav" data-path="p13" data-s="0" data-dur="2.6"><use href="#photo" x="-36" y="-29" width="72" height="58"/></g>
-  <g class="a up" data-s="0" data-f=".5">
-    <rect x="1080" y="330" width="470" height="410" rx="28" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/>
-    <use href="#theo" x="1100" y="390" width="180" height="334"/>
-    <rect x="1310" y="370" width="200" height="320" rx="26" fill="#12303A"/><rect x="1324" y="394" width="172" height="272" rx="14" fill="#F7FAFB"/>
+
+<!-- 21 · Medindo o tempo -->
+<g class="scene" id="sc21">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <g class="a up" data-s="0"><rect x="100" y="200" width="440" height="220" rx="24" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><text x="320" y="268" class="lbl s mid" style="fill:#52707A">velocidade da luz na fibra</text><text x="320" y="360" class="h2s mid" style="font-size:54px">≈ 200 mil km/s</text></g>
+  <g class="a up" data-s="1"><rect x="580" y="200" width="440" height="220" rx="24" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><text x="800" y="268" class="lbl s mid" style="fill:#52707A">cabo de Fortaleza a Portugal</text><text x="800" y="360" class="h2s mid" style="font-size:54px">≈ 6 mil km</text></g>
+  <g class="a up" data-s="2"><rect x="1060" y="200" width="440" height="220" rx="24" fill="#FFC83D" stroke="#12303A" stroke-width="5"/><text x="1280" y="268" class="lbl s mid">tempo para atravessar</text><text x="1280" y="360" class="h2s mid" style="font-size:54px">≈ 0,03 s</text></g>
+  <text x="800" y="530" class="lbl mid a fade" data-s="2" data-f=".3" style="font-size:38px">6.000 km ÷ 200.000 km/s = 0,03 s</text>
+  <text x="800" y="580" class="lbl s mid a fade" data-s="2" data-f=".55" style="fill:#52707A">três centésimos de segundo</text>
+  <g transform="translate(600,680)"><g class="a pop" data-s="3">
+    <path d="M-70 0 Q0 -55 70 0 Q0 55 -70 0Z" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/>
+    <circle r="22" fill="#2E7F98"/><circle r="9" fill="#12303A"/>
+    <path class="lid" d="M-70 0 Q0 -55 70 0 Q0 55 -70 0Z" fill="#A86B4A" stroke="#12303A" stroke-width="5"/>
+  </g></g>
+  <text x="700" y="692" class="lbl a fade" data-s="3" data-f=".2">mais rápido que um piscar de olhos</text>
+</g>
+
+<!-- 22 · Latência -->
+<g class="scene" id="sc22">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <text x="800" y="115" class="h2s mid a stamp" data-s="0" data-f=".6" style="fill:#C2412D">latência</text>
+  <text x="800" y="165" class="lbl s mid a fade" data-s="0" data-f=".7">o tempo que a informação leva para chegar</text>
+  <g class="a fade" data-s="1">
+    <rect x="100" y="230" width="640" height="400" rx="24" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/>
+    <text x="420" y="290" class="lbl mid">largura de banda</text>
+    <rect x="860" y="230" width="640" height="400" rx="24" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/>
+    <text x="1180" y="290" class="lbl mid" style="fill:#C2412D">latência</text>
   </g>
-  <g class="a pop" data-s="0" data-f=".85"><use href="#photo" x="1335" y="460" width="150" height="120"/></g>
-  <g class="a pop" data-s="0" data-f=".9"><text x="1410" y="630" class="lbl s mid" style="fill:#2FA37A">chegou!</text></g>
-  <g transform="translate(640,560)"><g class="a pop" data-s="1">
-    <rect x="-18" y="-152" width="36" height="26" rx="6" fill="#12303A"/>
-    <circle r="124" fill="#FFFFFF" stroke="#12303A" stroke-width="9"/>
-    <g stroke="#12303A" stroke-width="5" stroke-linecap="round"><path d="M0 -104 V-88 M104 0 H88 M0 104 V88 M-104 0 H-88"/></g>
-    <line x1="0" y1="0" x2="0" y2="-92" stroke="#E2604A" stroke-width="8" stroke-linecap="round" class="a sweep" data-s="1" data-o=".5"/>
-    <circle r="11" fill="#12303A"/>
-    <text y="178" class="lbl mid" style="font-size:36px">menos de 1 segundo</text>
+  <text x="800" y="470" class="h2s mid a stamp" data-s="1" data-f=".4" style="fill:#C2412D;font-size:90px">≠</text>
+  <g class="a fade" data-s="2">
+    <rect x="140" y="350" width="560" height="170" fill="#4B575C"/>
+    <path d="M140 392 H700 M140 435 H700 M140 478 H700" stroke="#FFFFFF" stroke-width="3" stroke-dasharray="22 18" opacity=".7"/>
+    <g>
+      <rect x="160" y="358" width="70" height="28" rx="8" fill="#E2604A"/><rect x="300" y="358" width="70" height="28" rx="8" fill="#FFC83D"/><rect x="470" y="358" width="70" height="28" rx="8" fill="#2FA37A"/><rect x="610" y="358" width="70" height="28" rx="8" fill="#5B8DEF"/>
+      <rect x="220" y="400" width="70" height="28" rx="8" fill="#5B8DEF"/><rect x="380" y="400" width="70" height="28" rx="8" fill="#E2604A"/><rect x="560" y="400" width="70" height="28" rx="8" fill="#FFC83D"/>
+      <rect x="170" y="443" width="70" height="28" rx="8" fill="#2FA37A"/><rect x="330" y="443" width="70" height="28" rx="8" fill="#FFC83D"/><rect x="500" y="443" width="70" height="28" rx="8" fill="#E2604A"/>
+      <rect x="250" y="486" width="70" height="28" rx="8" fill="#E2604A"/><rect x="420" y="486" width="70" height="28" rx="8" fill="#5B8DEF"/><rect x="600" y="486" width="70" height="28" rx="8" fill="#2FA37A"/>
+    </g>
+    <text x="420" y="585" class="lbl s mid">quantos carros cabem na estrada</text>
+  </g>
+  <g class="a fade" data-s="3">
+    <rect x="900" y="410" width="560" height="60" fill="#4B575C"/>
+    <g transform="translate(1180,350)"><circle r="34" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><rect x="-8" y="-46" width="16" height="10" fill="#12303A"/><line x1="0" y1="0" x2="0" y2="-24" stroke="#E2604A" stroke-width="5" stroke-linecap="round" class="a sweep" data-s="3" data-o=".3" style="animation-duration:2.6s;animation-iteration-count:infinite"/></g>
+    <text x="1180" y="585" class="lbl s mid">quanto tempo um carro leva para chegar</text>
+  </g>
+  <path id="q22" d="M940 440 H1420" fill="none"/>
+  <g class="trav" data-path="q22" data-s="3" data-f=".1" data-dur="2.6" data-loop="1" data-gap=".8"><use href="#car" x="-40" y="-20" width="80" height="40"/></g>
+  <g class="a pop" data-s="4"><rect x="560" y="660" width="480" height="64" rx="32" fill="#FFC83D" stroke="#12303A" stroke-width="3"/><text x="800" y="703" class="lbl mid">o ping dos jogos: em breve</text></g>
+</g>
+
+<!-- 23 · Chegada -->
+<g class="scene" id="sc23">
+  <rect width="1600" height="900" fill="#E3EEF1"/>
+  <text x="800" y="90" class="lbl mid a fade" data-s="0" style="font-size:34px">do outro lado, em Portugal</text>
+  <path d="M140 330 H1460" pathLength="1" class="a draw" data-s="0" style="--len:14s" fill="none" stroke="#2E7F98" stroke-width="8" stroke-linecap="round"/>
+  <path id="q23" d="M140 330 H1460" fill="none"/>
+  <g transform="translate(140,330)"><g class="a pop" data-s="0" data-f=".02"><circle r="62" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><path d="M-32 -10 L0 -34 L32 -10Z" fill="#E2604A" stroke="#12303A" stroke-width="3"/><rect x="-26" y="-10" width="52" height="36" fill="#F4F8F9" stroke="#12303A" stroke-width="3"/><rect x="-8" y="6" width="16" height="20" fill="#12303A"/><text y="104" class="lbl s mid">estação de ancoragem</text></g></g>
+  <g transform="translate(360,330)"><g class="a pop" data-s="0" data-f=".15"><circle r="62" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#cluster" x="-44" y="-44" width="88" height="88" style="color:#2FA37A"/><text y="-82" class="lbl s mid">redes de Portugal</text></g></g>
+  <g transform="translate(580,330)"><g class="a pop" data-s="0" data-f=".28"><circle r="62" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><rect x="-22" y="-36" width="44" height="72" rx="4" fill="#12303A"/><g fill="#4FD18B"><circle cx="-10" cy="-22" r="4"/><circle cx="-10" cy="-6" r="4"/><circle cx="-10" cy="10" r="4"/><circle cx="-10" cy="26" r="4"/></g><text y="104" class="lbl s mid">provedor do Theo</text></g></g>
+  <g transform="translate(800,330)"><g class="a pop" data-s="0" data-f=".42"><circle r="62" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#house" x="-34" y="-34" width="68" height="68" style="color:#2FA37A"/><text y="-82" class="lbl s mid">última milha</text></g></g>
+  <g transform="translate(1020,330)"><g class="a pop" data-s="0" data-f=".55"><circle r="62" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#router" x="-46" y="-28" width="92" height="51"/><text y="104" class="lbl s mid">roteador</text></g></g>
+  <g transform="translate(1240,330)"><g class="a pop" data-s="0" data-f=".7"><circle r="62" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><g fill="none" stroke="#E5A82B" stroke-width="6" stroke-linecap="round"><path d="M-12 14 A 18 18 0 0 1 12 14"/><path d="M-24 4 A 32 32 0 0 1 24 4"/><path d="M-36 -6 A 46 46 0 0 1 36 -6"/></g><circle cy="22" r="6" fill="#12303A"/><text y="-82" class="lbl s mid">ondas de rádio</text></g></g>
+  <g transform="translate(1460,330)"><g class="a pop" data-s="0" data-f=".85"><circle r="62" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><use href="#phone" x="-18" y="-33" width="36" height="66"/><text y="104" class="lbl s mid">celular do Theo</text></g></g>
+  <g class="trav" data-path="q23" data-s="0" data-f=".02" data-dur="15"><use href="#photo" x="-30" y="-24" width="60" height="48"/></g>
+  <g class="a fio" data-s="1" data-s2="2">
+    <rect x="420" y="520" width="320" height="150" rx="16" fill="#12303A"/>
+    <g class="bin" style="fill:#FFC83D;font-size:30px"><text x="580" y="572" text-anchor="middle">0110100101</text><text x="580" y="612" text-anchor="middle">1011001110</text><text x="580" y="652" text-anchor="middle">0010110111</text></g>
+    <path d="M770 595 H870 M850 580 L872 595 L850 610" stroke="#12303A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1130" y="605" class="lbl">os bits viram foto de novo</text>
+  </g>
+  <g class="a fio" data-s="1" data-f=".35" data-s2="2"><use href="#photo" x="900" y="515" width="200" height="160"/></g>
+  <g transform="translate(800,600)"><g class="a pop" data-s="2">
+    <rect x="-16" y="-112" width="32" height="24" rx="6" fill="#12303A"/>
+    <circle r="90" fill="#FFFFFF" stroke="#12303A" stroke-width="8"/>
+    <line x1="0" y1="0" x2="0" y2="-68" stroke="#E2604A" stroke-width="7" stroke-linecap="round" class="a sweep" data-s="2" data-o=".4"/>
+    <circle r="9" fill="#12303A"/>
+    <text x="130" y="12" class="lbl" style="font-size:36px">menos de 1 segundo</text>
   </g></g>
 </g>
 
-<!-- 14 · A nuvem tem pés -->
-<g class="scene" id="sc14">
+<!-- 24 · Onde está a internet -->
+<g class="scene" id="sc24">
   <rect width="1600" height="900" fill="#DCEBF2"/>
   <rect y="600" width="1100" height="300" fill="#9C8A6E"/>
   <rect x="1100" y="560" width="500" height="340" fill="url(#gSea)"/>
   <path d="M1100 600 L1100 560" stroke="#12303A" stroke-width="4"/>
   <path d="M1100 870 Q1300 840 1600 870 L1600 900 L1100 900Z" fill="#062130"/>
   <line x1="0" y1="600" x2="1100" y2="600" stroke="#12303A" stroke-width="4"/>
-  <text x="60" y="150" class="h2s a up" data-s="0">Onde está a internet?</text>
-  <g class="a up" data-s="1" data-f=".02">
-    <g stroke="#12303A" stroke-width="10"><line x1="110" y1="430" x2="110" y2="600"/><line x1="250" y1="430" x2="250" y2="600"/><line x1="390" y1="430" x2="390" y2="600"/></g>
-    <path d="M110 442 Q180 470 250 442 Q320 470 390 442" fill="none" stroke="#12303A" stroke-width="4"/>
-    <text x="250" y="410" class="lbl s mid">fios dos postes</text>
+  <text x="60" y="140" class="h2s a up" data-s="0">Onde está a internet?</text>
+  <g transform="translate(380,350)"><circle r="120" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="1" data-f=".02"/><circle r="120" fill="none" stroke="#FFC83D" stroke-width="6" class="ring" data-s="1" data-f=".02" data-o=".7"/></g>
+  <text x="560" y="300" class="lbl s mid a fade" data-s="1" data-f=".02">ondas de rádio</text>
+  <g class="a up" data-s="1" data-f=".1"><use href="#router" x="70" y="490" width="200" height="110"/><text x="170" y="470" class="lbl s mid">roteadores</text></g>
+  <g class="a up" data-s="1" data-f=".2"><use href="#tower" x="330" y="330" width="100" height="270"/><text x="380" y="316" class="lbl s mid">antenas</text></g>
+  <g class="a fade" data-s="1" data-f=".35">
+    <path d="M0 655 H1100" stroke="#FFC83D" stroke-width="8" stroke-dasharray="30 14"/>
+    <text x="300" y="705" class="lbl s w mid">fibras ópticas debaixo das ruas</text>
   </g>
-  <g class="a up" data-s="1" data-f=".17"><use href="#tower" x="470" y="330" width="100" height="270"/><text x="520" y="315" class="lbl s mid">antenas</text></g>
-  <g class="a fade" data-s="1" data-f=".36">
-    <path d="M0 660 H1100 M0 700 H1100" stroke="#FFC83D" stroke-width="8" stroke-dasharray="30 14"/>
-    <text x="300" y="745" class="lbl s w mid">cabos debaixo das ruas</text>
+  <g class="a fade" data-s="1" data-f=".55">
+    <path d="M1100 860 Q1300 830 1600 860" fill="none" stroke="#FFC83D" stroke-width="8"/>
+    <text x="1470" y="690" class="lbl s w mid">cabos no fundo do mar</text>
   </g>
-  <g class="a up" data-s="1" data-f=".55">
+  <g class="a up" data-s="1" data-f=".75">
     <rect x="660" y="400" width="250" height="200" fill="#F4F8F9" stroke="#12303A" stroke-width="5"/>
     <g fill="#12303A"><rect x="680" y="420" width="60" height="160" rx="4"/><rect x="755" y="420" width="60" height="160" rx="4"/><rect x="830" y="420" width="60" height="160" rx="4"/></g>
     <g fill="#4FD18B" class="blink" style="animation-duration:.8s"><circle cx="692" cy="440" r="4"/><circle cx="767" cy="470" r="4"/><circle cx="842" cy="450" r="4"/><circle cx="692" cy="520" r="4"/><circle cx="842" cy="540" r="4"/></g>
-    <text x="785" y="380" class="lbl s mid">prédios cheios de computadores</text>
+    <text x="785" y="382" class="lbl s mid">prédios cheios de computadores</text>
   </g>
-  <g class="a fade" data-s="1" data-f=".82">
-    <path d="M1100 860 Q1300 830 1600 860" fill="none" stroke="#FFC83D" stroke-width="8"/>
-    <text x="1490" y="820" class="lbl s w mid">fundo do mar</text>
+  <g class="a fade" data-s="2">
+    <path d="M990 250 Q 930 300 905 392" fill="none" stroke="#12303A" stroke-width="4" stroke-dasharray="10 8"/>
+    <path d="M893 372 L905 395 L922 376" fill="none" stroke="#12303A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="60" y="200" class="lbl s">“nuvem” = computadores em grandes prédios,</text>
+    <text x="60" y="234" class="lbl s">que usamos à distância</text>
   </g>
-  <g class="a fio" data-s="2" data-f=".1" data-s2="3">
-    <path d="M1060 250 L1040 596" pathLength="1" class="a draw" data-s="2" data-f=".1" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
-    <path d="M1120 250 L1080 596" pathLength="1" class="a draw" data-s="2" data-f=".1" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+  <g class="a fio" data-s="3" data-s2="4">
+    <path d="M1060 250 L1040 596" pathLength="1" class="a draw" data-s="3" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1120 250 L1080 596" pathLength="1" class="a draw" data-s="3" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
     <ellipse cx="1030" cy="598" rx="22" ry="9" fill="#12303A"/><ellipse cx="1070" cy="598" rx="22" ry="9" fill="#12303A"/>
   </g>
-  <g class="a fade" data-s="3">
-    <path d="M1150 250 L1190 862" pathLength="1" class="a draw" data-s="3" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
-    <path d="M1230 250 L1280 858" pathLength="1" class="a draw" data-s="3" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+  <g class="a fade" data-s="4">
+    <path d="M1150 250 L1190 862" pathLength="1" class="a draw" data-s="4" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1230 250 L1280 858" pathLength="1" class="a draw" data-s="4" fill="none" stroke="#12303A" stroke-width="10" stroke-linecap="round"/>
     <ellipse cx="1200" cy="864" rx="22" ry="9" fill="#12303A"/><ellipse cx="1290" cy="860" rx="22" ry="9" fill="#12303A"/>
   </g>
   <g transform="translate(1150,150)"><g class="float"><use href="#cloud" x="-210" y="-118" width="420" height="236"/></g></g>
-  <text x="1590" y="330" class="lbl end a fio" data-s="2" data-f=".4" data-s2="3">a nuvem tem os pés no chão</text>
-  <text x="1590" y="520" class="lbl end a fade" data-s="3" data-o=".6" style="fill:#12303A">no fundo do oceano!</text>
+  <text x="1590" y="330" class="lbl end a fio" data-s="3" data-f=".2" data-s2="4">a nuvem tem os pés no chão</text>
+  <text x="1590" y="520" class="lbl end a fade" data-s="4" data-f=".3">no fundo do oceano!</text>
 </g>
 
-<!-- 15 · Próxima pergunta -->
-<g class="scene" id="sc15">
+<!-- 25 · Ideia principal -->
+<g class="scene" id="sc25">
+  <rect width="1600" height="900" fill="#0B2A3A"/>
+  <text x="800" y="140" class="lbl am mid a fade" data-s="0" style="font-size:36px">para guardar a ideia principal</text>
+  <g class="a pop" data-s="0" data-f=".15"><rect x="120" y="200" width="420" height="240" rx="24" fill="#FFFFFF"/><use href="#cluster" x="285" y="222" width="90" height="90" style="color:#E2604A"/><text x="330" y="395" class="h2s mid" style="font-size:48px">rede de redes</text></g>
+  <g class="a pop" data-s="0" data-f=".3"><rect x="590" y="200" width="420" height="240" rx="24" fill="#FFFFFF"/><circle cx="800" cy="267" r="40" fill="#1D2B33"/><circle cx="800" cy="267" r="28" fill="#C98A4B"/><circle cx="800" cy="267" r="14" fill="#FFC83D"/><text x="800" y="370" class="h2s mid" style="font-size:44px">infraestrutura</text><text x="800" y="418" class="h2s mid" style="font-size:44px">física</text></g>
+  <g class="a pop" data-s="0" data-f=".5"><rect x="1060" y="200" width="420" height="240" rx="24" fill="#FFFFFF"/><text x="1270" y="285" class="bin" text-anchor="middle" style="font-size:40px;fill:#2E7F98">0 1 1 0 1</text><text x="1270" y="395" class="h2s mid" style="font-size:56px">bits</text></g>
+  <g class="a pop" data-s="0" data-f=".72"><rect x="310" y="510" width="280" height="72" rx="36" fill="#1B3B4A" stroke="#7FB7C9" stroke-width="3"/><circle cx="350" cy="546" r="11" fill="#FFC83D"/><text x="470" y="557" class="lbl w mid">pelo ar</text></g>
+  <g class="a pop" data-s="0" data-f=".82"><rect x="660" y="510" width="280" height="72" rx="36" fill="#1B3B4A" stroke="#7FB7C9" stroke-width="3"/><circle cx="700" cy="546" r="11" fill="#5B8DEF"/><text x="820" y="557" class="lbl w mid">por cabos</text></g>
+  <g class="a pop" data-s="0" data-f=".92"><rect x="1010" y="510" width="280" height="72" rx="36" fill="#1B3B4A" stroke="#7FB7C9" stroke-width="3"/><circle cx="1050" cy="546" r="11" fill="#CFEFFF"/><text x="1170" y="557" class="lbl w mid">por luz</text></g>
+</g>
+
+<!-- 26 · Próxima pergunta -->
+<g class="scene" id="sc26">
   <rect width="1600" height="900" fill="#E3EEF1"/>
   <text x="800" y="170" class="lbl mid a fade" data-s="0" style="font-size:36px">Se a internet é feita de coisas tão concretas…</text>
   <g class="a pop" data-s="0" data-f=".6"><rect x="120" y="260" width="420" height="150" rx="20" fill="#FFFFFF" stroke="#12303A" stroke-width="5"/><text x="330" y="355" class="h2s mid" style="font-size:52px">Quem constrói?</text></g>
@@ -605,6 +869,7 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
   <g class="a up" data-s="1" data-o=".2"><use href="#theo" x="1360" y="500" width="160" height="297"/></g>
   <text x="800" y="600" class="h1s mid a stamp" data-s="1" style="fill:#E2604A;font-size:84px">Até a próxima aula!</text>
 </g>
+
 </svg>
     <div class="chipsec" id="chip"></div>
     <div class="cap" id="cap" aria-live="off"></div>
@@ -615,34 +880,46 @@ h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,42px);l
     <button class="btn primary" id="play" aria-label="Reproduzir">▶ Play</button>
     <span class="time" id="time">0:00 / 0:00</span>
     <div class="track"><input type="range" id="scrub" min="0" max="100" step="0.05" value="0" aria-label="Linha do tempo"><div class="ticks" id="ticks"></div></div>
+    <button class="btn speed" id="speed" type="button" aria-pressed="false" aria-label="Velocidade 1x. Clique para mudar">1x</button>
     <label class="toggle"><input type="checkbox" id="capOn" checked> Legendas</label>
     <button class="btn" id="fs">Tela cheia</button>
   </div>
 
   <section class="scenes">
     <h2>Cenas</h2>
-    <p class="hint">A minutagem segue um ritmo de leitura de cerca de 150 palavras por minuto. Clique em uma cena para ir direto a ela.</p>
+    <p class="hint">A minutagem segue um ritmo de leitura de cerca de 150 palavras por minuto, na velocidade 1x. Clique em uma cena para ir direto a ela. Atalhos: espaço para play/pausa, setas para pular 5 s, S para alternar entre 1x e 2x.</p>
     <div id="chapters"></div>
   </section>
 </div>
 
 <script>
 const DATA = [
- {sec:"Provocando a reflexão inicial", name:"Onde está a internet?", text:"Olá, estudantes! Vamos começar com uma pergunta que parece simples: onde está a internet agora? Se pedíssemos para alguém apontar para a internet, para onde essa pessoa apontaria? Para o céu? Para o roteador? Para o celular?"},
- {sec:"Provocando a reflexão inicial", name:"A ideia de nuvem", text:"Muita gente responde “está na nuvem”. E a palavra nuvem faz a gente imaginar algo leve, flutuando no céu, invisível. Mas hoje vamos descobrir que a internet é muito mais pesada, concreta e surpreendente do que uma nuvem."},
- {sec:"Provocando a reflexão inicial", name:"Lia e Theo", text:"Para essa investigação, vamos ter companhia. Esta é a Lia. Ela mora em Fortaleza e quer mandar uma foto para o primo Theo, que mora em Lisboa, do outro lado do oceano. Vamos seguir essa foto e descobrir por onde ela passa."},
- {sec:"Acompanhando os primeiros passos da foto", name:"Do celular ao roteador", text:"Então, a Lia tira a foto, escolhe o Theo na lista de conversas e aperta “enviar”. O primeiro trecho da viagem é curtinho: a foto sai do celular como uma onda invisível, parecida com as ondas do rádio, e vai até o roteador de Wi-Fi da casa dela. Se ela estiver na rua, usando os dados móveis, essa onda vai até uma antena, aquelas torres altas que vemos em cima de prédios e morros."},
- {sec:"Acompanhando os primeiros passos da foto", name:"Do ar para o fio", text:"Até aqui, a viagem foi pelo ar. Mas é só o comecinho. Do roteador em diante, a foto entra em um fio. E a partir desse ponto, quase toda a viagem acontece dentro de cabos."},
- {sec:"Viajando pelos cabos da cidade", name:"Riachos que viram rio", text:"Esse fio sai da casa da Lia e se junta a outros fios, de outras casas, como riachos que se juntam para formar um rio. Os fios correm pelos postes e por baixo das ruas até chegar à empresa que vende a internet para a família dela."},
- {sec:"Viajando pelos cabos da cidade", name:"Fibra óptica", text:"Muitos desses cabos são feitos de fibra óptica. Imaginem um fio de vidro mais fino que um fio de cabelo, por onde a informação viaja como luz. É como se alguém, lá no começo do fio, piscasse uma lanterna muito rápido, acendendo e apagando milhões de vezes por segundo. Cada piscada carrega um pedacinho da foto. E a luz viaja tão rápido que conseguiria dar várias voltas no Brasil no tempo de um piscar de olhos."},
- {sec:"Chegando ao litoral", name:"Um oceano no caminho", text:"Agora vem o grande desafio: o Theo está em Portugal. Entre Fortaleza e Lisboa existe um oceano inteiro. Como a foto atravessa o Atlântico?"},
- {sec:"Chegando ao litoral", name:"Satélite ou cabo?", text:"Muita gente imagina que é por satélite. Satélites existem e ajudam em lugares muito isolados, mas a resposta principal é outra, e bem mais surpreendente: quase toda a informação que viaja entre continentes passa por cabos colocados no fundo do mar. São os cabos submarinos."},
- {sec:"Chegando ao litoral", name:"Fortaleza, porta dos cabos", text:"E aqui vai uma curiosidade sobre a nossa região: Fortaleza é um dos lugares do Brasil onde mais chegam cabos submarinos. Ou seja, muita informação que entra e sai do país passa pela praia de uma cidade do Nordeste. Um desses cabos liga justamente Fortaleza a Portugal, e é por ele que a foto da Lia pode viajar."},
- {sec:"Mergulhando com o cabo submarino", name:"Por dentro do cabo", text:"Como é um cabo desses? Perto da praia, ele é grosso e protegido por camadas de metal, porque ali corre mais risco: âncoras de navio, redes de pesca, pedras. Já no fundo do oceano, onde quase nada chega, ele pode ser fino, mais ou menos da grossura de uma mangueira de jardim. E lá dentro, no centro, estão aqueles fios de vidro por onde a luz corre."},
- {sec:"Mergulhando com o cabo submarino", name:"No fundo do mar", text:"Esse cabo atravessa milhares de quilômetros pelo fundo do mar, passando por planícies escuras, montanhas submarinas e peixes que nunca viram a luz do sol. E, ao longo do caminho, existem pequenos aparelhos que dão um “empurrãozinho” na luz, para que ela não fique fraca demais antes de chegar ao outro lado."},
+ {sec:"Abertura", name:"Onde está a internet?", text:"Vamos começar com uma pergunta que parece simples: onde está a internet agora? Se pedíssemos para alguém apontar para a internet, para onde essa pessoa apontaria? Para o céu? Para o roteador? Para o celular?"},
+ {sec:"Abertura", name:"A ideia de nuvem", text:"Muita gente responde “está na nuvem”. E a palavra nuvem faz a gente imaginar algo leve, flutuando no céu, invisível. Mas hoje vamos descobrir que a internet é muito mais pesada, concreta e surpreendente do que uma nuvem."},
+ {sec:"Abertura", name:"Lia e Theo", text:"Para essa investigação, vamos ter companhia. Esta é a Lia. Ela mora em Fortaleza e quer mandar uma foto para o primo Theo, que mora em Portugal, do outro lado do oceano. Vamos seguir essa foto e descobrir por onde ela passa."},
+ {sec:"Definindo o que é a internet", name:"Rede de redes", text:"Antes de seguir a foto, vamos entender uma ideia que vai amarrar toda a nossa unidade. A internet não é uma coisa só. Ela é uma **rede de redes**."},
+ {sec:"Definindo o que é a internet", name:"Rede local", text:"Uma **rede** é um conjunto de dispositivos conectados que conseguem trocar informações. A casa da Lia tem uma rede pequena: o celular, o computador e a TV, todos ligados ao mesmo roteador. Essa rede pequena se chama **rede local**."},
+ {sec:"Definindo o que é a internet", name:"Redes conectadas e protocolos", text:"A escola tem outra rede local. Uma empresa tem outra. A internet é o que acontece quando milhões dessas redes, no mundo inteiro, se conectam umas às outras e combinam as mesmas regras para conversar. Essas regras combinadas se chamam **protocolos**, e nós já conhecemos alguns deles no 7º ano."},
+ {sec:"Transformando a foto em bits", name:"Ligado e desligado", text:"Agora, um detalhe importante: para viajar, a foto precisa mudar de forma. Computadores não enxergam cores nem rostos. Eles entendem apenas dois sinais: ligado e desligado, que representamos como 1 e 0. Cada um desses sinais é um **bit**, a menor unidade de informação. Lembram do código binário? É ele aqui de novo."},
+ {sec:"Transformando a foto em bits", name:"A foto vira zeros e uns", text:"Toda a foto da Lia, cada cor e cada ponto da imagem, é transformada em uma sequência enorme de zeros e uns. É essa sequência que vai viajar. E a pergunta passa a ser: como se transporta um zero e um de Fortaleza até Portugal?"},
+ {sec:"Viajando pelo ar até o roteador", name:"Ondas de rádio e Wi-Fi", text:"A Lia aperta “enviar”. O primeiro trecho é pelo ar. O celular transforma os bits em **ondas de rádio**, parecidas com as que levam a música até o rádio do carro, só que em outra frequência. Essas ondas são invisíveis e atravessam o ar até o **roteador** de Wi-Fi da casa. O **Wi-Fi** é justamente o nome da tecnologia que faz essa conversa sem fio dentro da rede local."},
+ {sec:"Viajando pelo ar até o roteador", name:"Dados móveis", text:"Se a Lia estivesse na rua, usando os **dados móveis**, como o 4G ou o 5G, as ondas iriam até uma antena da operadora, aquelas torres altas que vemos em cima de prédios e morros. Essas torres são chamadas de **estações rádio base**."},
+ {sec:"Viajando pelo ar até o roteador", name:"Os limites do sem fio", text:"A transmissão sem fio é prática, mas tem limites: as ondas perdem força com a distância e com as paredes. Por isso, a viagem pelo ar é sempre curta. Logo o sinal entra em um cabo."},
+ {sec:"Correndo pela fibra óptica", name:"Provedor e última milha", text:"Do roteador, os bits seguem por cabos até a empresa que vende a internet para a família da Lia. Essa empresa se chama **provedor de internet**. É ela que conecta a rede local da Lia ao resto da rede de redes. Esse trecho final, entre o provedor e a casa, é chamado de **última milha**."},
+ {sec:"Correndo pela fibra óptica", name:"Luz acesa, luz apagada", text:"Hoje, muitos desses cabos são de **fibra óptica**. Imaginem um fio de vidro mais fino que um fio de cabelo. Os bits viajam dentro dele como luz: luz acesa é 1, luz apagada é 0. É como se alguém, lá no começo do fio, piscasse uma lanterna bilhões de vezes por segundo."},
+ {sec:"Correndo pela fibra óptica", name:"Reflexão interna total", text:"Mas por que a luz não escapa pelas laterais do fio? Por causa de um fenômeno chamado **reflexão interna total**. A luz entra no vidro em um ângulo e, toda vez que encosta na parede do fio, é refletida de volta para dentro, como uma bolinha quicando pelas paredes de um tubo. Assim ela segue em zigue-zague, sem sair, por quilômetros."},
+ {sec:"Correndo pela fibra óptica", name:"Largura de banda", text:"E a quantidade de bits que o cabo consegue levar por segundo tem nome: **largura de banda**. Quanto maior, mais informação passa ao mesmo tempo, como uma estrada com mais faixas."},
+ {sec:"Chegando ao litoral", name:"Um oceano no caminho", text:"Agora vem o grande desafio: entre Fortaleza e Portugal existe um oceano inteiro. Como a foto atravessa o Atlântico?"},
+ {sec:"Chegando ao litoral", name:"Satélite ou cabo?", text:"Muita gente imagina que é por **satélite**. Satélites existem e são importantes em lugares isolados, mas a resposta principal é outra: quase toda a informação que viaja entre continentes passa por **cabos submarinos**, colocados no fundo do mar."},
+ {sec:"Chegando ao litoral", name:"Estação de ancoragem", text:"E aqui vai uma curiosidade sobre a nossa região: Fortaleza é um dos lugares do Brasil onde mais chegam cabos submarinos. Eles saem do mar em construções discretas no litoral chamadas **estações de ancoragem**, onde o cabo do oceano se conecta às redes em terra. Um desses cabos liga justamente Fortaleza a Portugal, e é por ele que a foto da Lia pode viajar."},
+ {sec:"Mergulhando com o cabo submarino", name:"Por dentro do cabo", text:"Como é um cabo desses? Perto da praia, ele é grosso e protegido por camadas de metal, porque ali corre mais risco: âncoras de navio, redes de pesca, pedras. Já no fundo do oceano, onde quase nada chega, ele pode ser fino, mais ou menos da grossura de uma mangueira de jardim. No centro, estão os fios de fibra óptica."},
+ {sec:"Mergulhando com o cabo submarino", name:"Atenuação e repetidores", text:"Mesmo com a reflexão interna total, a luz vai perdendo força ao longo de milhares de quilômetros. Esse enfraquecimento do sinal se chama **atenuação**. Para resolver, existem aparelhos instalados ao longo do cabo, os **amplificadores** ou **repetidores**, que dão um “empurrão” na luz para ela continuar forte até o outro lado."},
  {sec:"Mergulhando com o cabo submarino", name:"O navio de reparo", text:"E se o cabo quebrar? Existem navios especializados em consertar cabos. Eles localizam o ponto do problema, puxam o cabo até a superfície, fazem o reparo no próprio navio e devolvem o cabo para o fundo do mar."},
- {sec:"Revelando o que é a “nuvem”", name:"Chegada em Lisboa", text:"Do outro lado, em Portugal, o cabo sai do mar, entra na terra, segue por mais fios e chega até o celular do Theo. Toda essa viagem, que parece um filme de aventura, acontece em menos de um segundo."},
- {sec:"Revelando o que é a “nuvem”", name:"A nuvem tem pés", text:"Então, voltando à nossa pergunta: onde está a internet? Ela está nos fios dos postes, nas antenas, nos cabos debaixo das ruas, nos prédios cheios de computadores e no fundo do mar. A nuvem, na verdade, tem os pés no chão. Ou melhor, no fundo do oceano."},
+ {sec:"Medindo o tempo da viagem", name:"Fazendo a conta", text:"A luz dentro da fibra viaja a cerca de 200 mil quilômetros por segundo. Fortaleza e Portugal estão separados por uns 6 mil quilômetros de cabo. Então a luz leva só uns três centésimos de segundo para atravessar o oceano. Mais rápido que um piscar de olhos."},
+ {sec:"Medindo o tempo da viagem", name:"Latência", text:"Esse tempo que a informação leva para chegar de um ponto a outro tem nome: **latência**. Ela é diferente da largura de banda. A largura de banda diz quantos carros cabem na estrada. A latência diz quanto tempo um carro leva para chegar. Vamos voltar a essa ideia em breve, quando falarmos do ping dos jogos."},
+ {sec:"Revelando o que é a “nuvem”", name:"Chegada em Portugal", text:"Do outro lado, em Portugal, o cabo sai do mar por outra estação de ancoragem, entra nas redes de lá, passa pelo provedor do Theo, pela última milha, pelo roteador da casa dele e, pelas ondas de rádio, chega até o celular. Os bits viram foto de novo. E toda essa viagem acontece em menos de um segundo."},
+ {sec:"Revelando o que é a “nuvem”", name:"A nuvem tem pés", text:"Então, voltando à nossa pergunta: onde está a internet? Ela está nas ondas de rádio, nos roteadores, nas antenas, nas fibras ópticas debaixo das ruas, nos cabos no fundo do mar e em prédios cheios de computadores. Quando falamos em “nuvem”, estamos falando, na verdade, desses computadores guardados em grandes prédios, que nós usamos à distância. A nuvem tem os pés no chão. Ou melhor, no fundo do oceano."},
+ {sec:"Revelando o que é a “nuvem”", name:"A ideia principal", text:"Para guardar a ideia principal: a internet é uma **rede de redes**, feita de uma **infraestrutura física**, por onde a informação viaja em forma de **bits**, pelo ar, por cabos e por luz."},
  {sec:"Revelando o que é a “nuvem”", name:"A próxima pergunta", text:"E isso traz uma nova pergunta, que vamos investigar nas próximas aulas: se a internet é feita de coisas tão concretas, quem constrói, quem cuida e quem paga por tudo isso? Até a próxima aula!"}
 ];
 const WPS = 2.55, LEAD = .6, GAP = .35, TAIL = 1.1;
@@ -698,12 +975,14 @@ DATA.forEach((s,i)=>{
     secEl.innerHTML = `<h3></h3><div class="list"></div>`; secEl.querySelector('h3').textContent = s.sec; chapWrap.appendChild(secEl); }
   const b = document.createElement('button'); b.className='sc'; b.type='button';
   b.innerHTML = `<span class="tc"></span><b></b><span></span>`;
-  b.children[0].textContent = fmt(s.start); b.children[1].textContent = s.name; b.children[2].textContent = s.sent[0];
+  b.children[0].textContent = fmt(s.start); b.children[1].textContent = s.name; b.children[2].textContent = s.sent[0].replace(/\*\*/g,'');
   b.addEventListener('click',()=>{ started = true; $('bigplay').hidden = true; t = s.start + .01; render(); $('stage').scrollIntoView({behavior:'smooth',block:'nearest'}); });
   s.btn = b; secEl.querySelector('.list').appendChild(b);
 });
 
 let t = 0, cur = -1, anims = [], playing = false, started = false, dragging = false;
+const SPEEDS = [1, 1.5, 2]; let speed = 1;
+function setSpeed(v){ speed = v; const b = $('speed'); b.textContent = (v+'').replace('.', ',') + 'x'; b.setAttribute('aria-pressed', v > 1 ? 'true' : 'false'); b.setAttribute('aria-label', 'Velocidade ' + b.textContent + '. Clique para mudar'); }
 
 function sceneAt(x){ let i = DATA.length-1; for(let k=0;k<DATA.length;k++){ if (x < DATA[k].start + DATA[k].dur){ i = k; break; } } return i; }
 
@@ -731,7 +1010,7 @@ function render(){
   }
   // legenda
   let k = -1; s.st.forEach((st,j)=>{ if (local >= st - .1) k = j; });
-  $('cap').textContent = (started && $('capOn').checked && k >= 0) ? s.sent[k] : '';
+  $('cap').innerHTML = (started && $('capOn').checked && k >= 0) ? s.sent[k].replace(/\*\*(.+?)\*\*/g,'<b>$1</b>') : '';
   if (!dragging) $('scrub').value = t.toFixed(2);
   $('time').textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
 }
@@ -739,7 +1018,7 @@ function render(){
 let last = null;
 function loop(ts){
   if (!playing){ last = null; return; }
-  if (last !== null) t += (ts - last)/1000;
+  if (last !== null) t += (ts - last)/1000 * speed;
   last = ts;
   if (t >= TOTAL){ t = TOTAL - .01; setPlaying(false); }
   render();
@@ -758,12 +1037,14 @@ $('bigplay').addEventListener('click', ()=>setPlaying(true));
 $('scrub').addEventListener('input', e=>{ dragging = true; if(!started){started=true;$('bigplay').hidden=true;} t = +e.target.value; render(); });
 $('scrub').addEventListener('change', ()=>{ dragging = false; });
 $('capOn').addEventListener('change', render);
+$('speed').addEventListener('click', ()=>setSpeed(SPEEDS[(SPEEDS.indexOf(speed)+1) % SPEEDS.length]));
 $('fs').addEventListener('click', ()=>{ const el = $('stage'); try{ const r = document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen?.(); r && r.catch && r.catch(()=>{}); }catch(e){} });
 document.addEventListener('keydown', e=>{
   if (e.target.closest && e.target.closest('input,button,select,textarea')) return;
   if (e.code === 'Space' || e.key === 'k'){ e.preventDefault(); setPlaying(!playing); }
   if (e.key === 'ArrowRight'){ t = Math.min(TOTAL-.01, t+5); if(!started){started=true;$('bigplay').hidden=true;} render(); }
   if (e.key === 'ArrowLeft'){ t = Math.max(0, t-5); render(); }
+  if (e.key === 's' || e.key === 'S'){ setSpeed(speed === 2 ? 1 : 2); }
 });
 
 // quadro de capa: Lia, Theo e o caminho no mapa
